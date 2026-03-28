@@ -320,7 +320,7 @@ const Landing: FC = () => {
         </section>
 
         {/* Pricing Section */}
-        <section className="py-16 px-6 bg-gray-50">
+        <section id="pricing" className="py-16 px-6 bg-gray-50">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-black mb-12 text-center font-jakarta">
               Simple, transparent pricing
