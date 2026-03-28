@@ -21,14 +21,14 @@ export interface AdTemplate {
 
 export async function fetchAdTemplates() {
   try {
-    const response = await fetch('https://pinrest-api.netlify.app/api/hello', {
+    const response = await fetch('/data.json', {
       headers: {
         'Content-Type': 'application/json',
       },
     });
     
     if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
+      throw new Error(`Failed to load data: ${response.status}`);
     }
     
     const data: AdTemplate[] = await response.json();
