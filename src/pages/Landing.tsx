@@ -293,7 +293,7 @@ const Landing: FC = () => {
                   </div>
                 </div>
                 <button 
-                  onClick={() => window.open('https://buy.stripe.com/test_XXXXXXXXXXXXX', '_blank')}
+                  onClick={() => window.open('https://buy.stripe.com/7sIaGp7yn9Da24MdQQ', '_blank')}
                   className="mt-8 w-full py-3 px-6 rounded-xl bg-black text-white hover:bg-black/90 transition-colors font-jakarta"
                 >
                   Join Waitlist
