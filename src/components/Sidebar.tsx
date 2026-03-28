@@ -14,7 +14,7 @@ const Sidebar: FC = () => {
   const { credits, currentlyGenerating } = useCredits();
   
   return (
-    <div className="bg-white border-r-[1px] border-r-lightgrey overflow-y-auto fixed top-0 left-0 h-screen w-80 flex flex-col items-center pt-9 text-[#536772] font-jakarta">
+    <div className="bg-white border-r-[1px] border-r-lightgrey overflow-y-auto h-screen w-full flex flex-col items-center pt-9 text-[#536772] font-jakarta">
       <div className="flex flex-col items-center gap-10 mb-10">
         <div className="flex items-center justify-between w-60">
           <div className="flex items-center gap-2">

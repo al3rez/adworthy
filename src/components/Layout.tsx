@@ -13,9 +13,11 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children, title, headerActions }) => {
   return (
     <div className="min-h-screen bg-white flex">
-      <Sidebar />
+      <div className="fixed top-0 left-0 h-screen w-80">
+        <Sidebar />
+      </div>
       
-      <div className="flex-1 pl-80">
+      <div className="flex-1 ml-80 flex flex-col">
         <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-lightgrey py-4 px-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -39,7 +41,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title, headerActions }) => {
           </div>
         </div>
         
-        <main className="p-6">
+        <main className="flex-1 p-6 overflow-auto">
           {children}
         </main>
       </div>

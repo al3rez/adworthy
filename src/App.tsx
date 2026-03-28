@@ -14,6 +14,9 @@ import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
 import Creatives from "./pages/Creatives";
 
+// Import global styles
+import "@/styles/globals.css";
+
 const queryClient = new QueryClient();
 
 const AppRoutes = () => {
@@ -51,17 +54,6 @@ const AppRoutes = () => {
 };
 
 const App = () => {
-  useEffect(() => {
-    // Add Plus Jakarta Sans font link
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap';
-    document.head.appendChild(link);
-
-    // Apply Plus Jakarta Sans font to body
-    document.body.classList.add('font-jakarta');
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
