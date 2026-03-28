@@ -209,7 +209,7 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
 
       // Check available credits
       const { data: creditsData, error: creditsError } = await supabase.functions.invoke('check-credits', {
-        body: { user_email: "christian@wiens.io", user_id: user.id }
+        body: { user_email: user.email, user_id: user.id }
       });
       if (creditsError) {
         toast({
@@ -231,7 +231,34 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
       if (!creditsData.available_credits) {
         toast({
           title: "You've used all of your credits.",
-          description: `Please purchase additional credits to continue.`,
+          description: (
+            <div className="space-y-2">
+              <p>Please purchase additional credits to continue.</p>
+              <div className="mt-2 p-3 bg-gray-50 rounded-lg">
+                <h4 className="font-medium mb-1">Additional Credits Pricing:</h4>
+                <ul className="space-y-1 text-sm">
+                  <li className="flex items-center gap-2">
+                    <span className="text-green-500">✓</span>
+                    <span className="text-black">Starter Plan: $1.50 per credit</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-green-500">✓</span>
+                    <span className="text-black">Pro Plan: $1.25 per credit</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-green-500">✓</span>
+                    <span className="text-black">Enterprise Plan: $1.00 per credit</span>
+                  </li>
+                </ul>
+                <Button 
+                  onClick={() => navigate('/settings')}
+                  className="mt-3 w-full bg-black hover:bg-black/90 text-white"
+                >
+                  Buy Additional Credits
+                </Button>
+              </div>
+            </div>
+          ),
           variant: "destructive"
         });
         return;

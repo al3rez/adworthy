@@ -18,8 +18,6 @@ serve(async (req) => {
       throw new Error('Email is required')
     }
 
-    email = "christian@wiens.io"
-
     // Call Stripe API to search for customer
     const response = await fetch(
       `https://api.stripe.com/v1/customers/search?query=email:'${email}'&expand[]=data.subscriptions`,

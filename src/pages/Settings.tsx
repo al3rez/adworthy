@@ -7,12 +7,20 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import Layout from '@/components/Layout';
 import { getActiveSubscription } from '@/integrations/stripe/payment-links';
+import { supabase } from '@/lib/supabase';
 
 interface Subscription {
   id: string;
   status: string;
   current_period_end: number;
   customer: string;
+  pricing_tier: {
+    name: string;
+    credits: number;
+    features: string[];
+  };
+  credits_total: number;
+  credits_used: number;
 }
 
 const PRICING_PLANS = [
@@ -58,6 +66,7 @@ const Settings: FC = () => {
   const { user } = useAuth();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [loading, setLoading] = useState(true);
+  const [credits, setCredits] = useState<{ credits_total: number; credits_used: number } | null>(null);
 
   useEffect(() => {
     const fetchSubscription = async () => {
@@ -66,6 +75,21 @@ const Settings: FC = () => {
 
         const data = await getActiveSubscription(user.id);
         setSubscription(data);
+
+        // Fetch credits from Supabase
+        const { data: creditsData, error } = await supabase
+          .from('user_credits')
+          .select('credits_total, credits_used')
+          .eq('user_id', user.id)
+          .single();
+
+
+        if (error) {
+          console.error('Error fetching credits:', error);
+          return;
+        }
+
+        setCredits(creditsData);
       } catch (error) {
         console.error('Error fetching subscription:', error);
       } finally {
@@ -97,7 +121,7 @@ const Settings: FC = () => {
               <div className="bg-white rounded-xl p-6 shadow-sm border border-[#E5E7EB]">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-lg font-semibold text-[#10B981] font-jakarta">
-                    Active Plan
+                    {subscription.pricing_tier.name} Plan
                   </h3>
                   <Badge className="bg-[#ECFDF5] text-[#059669] border-[#059669]">
                     Active
@@ -108,31 +132,50 @@ const Settings: FC = () => {
                     <span>Renewal Date</span>
                     <span>{new Date(subscription.current_period_end * 1000).toLocaleDateString()}</span>
                   </div>
+                  <div className="flex justify-between items-center text-sm text-[#536772]">
+                    <span>Credits per Month</span>
+                    <span className={credits?.credits_used >= subscription.pricing_tier.credits ? 'text-red-500' : ''}>
+                      {credits?.credits_used} / {subscription.pricing_tier.credits}
+                    </span>
+                  </div>
+                  <div className="pt-4">
+                    <h4 className="text-sm font-medium text-[#536772] mb-2">Plan Features</h4>
+                    <ul className="space-y-2">
+                      {subscription.pricing_tier.features.map((feature, index) => (
+                        <li key={index} className="flex items-center gap-2 text-sm text-[#536772]">
+                          <span className="text-green-500">✓</span>
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Additional Credits Section */}
-            <div className="space-y-4">
-              <h2 className="text-xl font-bold text-black">Additional Credits</h2>
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-[#E5E7EB]">
-                <div className="flex items-center gap-4 mb-6">
-                  <Info className="w-5 h-5 text-[#6B7280]" />
-                  <div>
-                    <p className="text-sm font-medium">Need more credits?</p>
-                    <p className="text-sm text-[#536772]">
-                      Purchase additional credits at $1.50 each
-                    </p>
+            {credits && credits.credits_used >= subscription.pricing_tier.credits && (
+              <div className="space-y-4">
+                <h2 className="text-xl font-bold text-black">Additional Credits</h2>
+                <div className="bg-white rounded-xl p-6 shadow-sm border border-[#E5E7EB]">
+                  <div className="flex items-center gap-4 mb-6">
+                    <Info className="w-5 h-5 text-[#6B7280]" />
+                    <div>
+                      <p className="text-sm font-medium">Need more credits?</p>
+                      <p className="text-sm text-[#536772]">
+                        Purchase additional credits at $1.50 each
+                      </p>
+                    </div>
                   </div>
+                  <Button 
+                    onClick={() => window.open('https://buy.stripe.com/...', '_blank')}
+                    className="w-full bg-black hover:bg-black/90 text-white px-6 py-3 rounded-xl font-jakarta"
+                  >
+                    Buy Credits
+                  </Button>
                 </div>
-                <Button 
-                  onClick={() => window.open('https://buy.stripe.com/...', '_blank')}
-                  className="w-full bg-black hover:bg-black/90 text-white px-6 py-3 rounded-xl font-jakarta"
-                >
-                  Buy Credits
-                </Button>
               </div>
-            </div>
+            )}
           </>
         ) : (
           <>
