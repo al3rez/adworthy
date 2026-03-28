@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Play, Power } from 'lucide-react';
@@ -16,16 +16,84 @@ const Landing: FC = () => {
   const [templates, setTemplates] = useState<AdTemplate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showDemo, setShowDemo] = useState(false);
+  const [visibleImages, setVisibleImages] = useState<Set<string>>(new Set());
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const preloadedImages = useRef<Set<string>>(new Set());
   
   useEffect(() => {
     const loadTemplates = async () => {
       const data = await fetchAdTemplates();
       setTemplates(data);
       setIsLoading(false);
+      
+      // Check which images are already preloaded
+      data.forEach(template => {
+        const img = new Image();
+        img.onload = () => {
+          preloadedImages.current.add(template.id);
+          setVisibleImages(prev => new Set([...prev, template.id]));
+        };
+        img.src = template.imageURL;
+      });
     };
     
     loadTemplates();
   }, []);
+
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const imageId = entry.target.getAttribute('data-id');
+            if (imageId) {
+              // If image is already preloaded, show it immediately
+              if (preloadedImages.current.has(imageId)) {
+                setVisibleImages((prev) => new Set([...prev, imageId]));
+              } else {
+                // Otherwise, load it and preload next images
+                const img = new Image();
+                img.onload = () => {
+                  preloadedImages.current.add(imageId);
+                  setVisibleImages((prev) => new Set([...prev, imageId]));
+                  
+                  // Preload next 6 images
+                  const currentIndex = templates.findIndex(t => t.id === imageId);
+                  if (currentIndex !== -1) {
+                    templates.slice(currentIndex + 1, currentIndex + 7).forEach(template => {
+                      if (!preloadedImages.current.has(template.id)) {
+                        const nextImg = new Image();
+                        nextImg.src = template.imageURL;
+                      }
+                    });
+                  }
+                };
+                img.src = templates.find(t => t.id === imageId)?.imageURL || '';
+              }
+              observerRef.current?.unobserve(entry.target);
+            }
+          }
+        });
+      },
+      {
+        rootMargin: '200px 0px',
+        threshold: 0.1,
+      }
+    );
+
+    return () => {
+      observerRef.current?.disconnect();
+    };
+  }, [templates]);
+
+  useEffect(() => {
+    if (!isLoading && templates.length > 0) {
+      const imageElements = document.querySelectorAll('.template-image');
+      imageElements.forEach((element) => {
+        observerRef.current?.observe(element);
+      });
+    }
+  }, [isLoading, templates]);
   
   return (
     <div className="min-h-screen">
@@ -92,31 +160,51 @@ const Landing: FC = () => {
         {/* Pinterest Style Examples Section */}
         <section className="pb-24 px-6">
           <div className="max-w-7xl mx-auto">
-            
-            {isLoading ? (
-              <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {templates.map((template) => (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {templates.length > 0 ? (
+                templates.map((template) => (
                   <div 
                     key={template.id}
                     className="bg-white rounded-2xl shadow-one overflow-hidden group cursor-pointer hover:shadow-xl transition-all duration-300"
                   >
                     <div className="relative aspect-[3/4] overflow-hidden">
-                      <img 
-                        src={template.imageURL} 
-                        alt={template.title}
-                        className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
-                      />
+                      <div 
+                        className="template-image w-full h-full"
+                        data-id={template.id}
+                      >
+                        {visibleImages.has(template.id) ? (
+                          <img 
+                            src={template.imageURL} 
+                            alt={template.title}
+                            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+                            onLoad={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.style.opacity = '1';
+                            }}
+                            style={{ opacity: 0, transition: 'opacity 0.3s ease-in' }}
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gray-100 animate-pulse" />
+                        )}
+                      </div>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>
-                    
                   </div>
-                ))}
-              </div>
-            )}
+                ))
+              ) : (
+                // Show placeholder grid cells while loading
+                Array.from({ length: 8 }).map((_, index) => (
+                  <div 
+                    key={`placeholder-${index}`}
+                    className="bg-white rounded-2xl shadow-one overflow-hidden"
+                  >
+                    <div className="relative aspect-[3/4] overflow-hidden">
+                      <div className="w-full h-full bg-gray-100 animate-pulse" />
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </section>
         {/* Pain Points Section */}
