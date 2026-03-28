@@ -34,7 +34,7 @@ const PRICING_PLANS = [
       'Basic templates',
       '$1.50 per additional credit'
     ],
-    paymentLink: 'https://buy.stripe.com/...' // Replace with your actual payment link
+    paymentLink: "https://buy.stripe.com/fZe6q98Cr6qY4cU5klk"
   },
   {
     name: 'Pro',
@@ -46,7 +46,7 @@ const PRICING_PLANS = [
       'A/B testing',
       '$1.25 per additional credit'
     ],
-    paymentLink: 'https://buy.stripe.com/...' // Replace with your actual payment link
+    paymentLink: "https://buy.stripe.com/aEU4i17yn16E4cUfZ0"
   },
   {
     name: 'Enterprise',
@@ -58,7 +58,7 @@ const PRICING_PLANS = [
       'Facebook Ads API',
       '$1.00 per additional credit'
     ],
-    paymentLink: 'https://buy.stripe.com/...' // Replace with your actual payment link
+    paymentLink: "https://buy.stripe.com/8wMcOx05VdTq4cUdQT"
   }
 ];
 
