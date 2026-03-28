@@ -7,6 +7,7 @@ import { toast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { Download, X, Image as ImageIcon, Loader2, ChevronDown } from 'lucide-react';
 import { useCredits } from '@/contexts/CreditsContext';
+import { createClient } from '@supabase/supabase-js';
 
 interface AdCustomizerModalProps {
   open: boolean;
@@ -42,28 +43,36 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
   
   const [prompt, setPrompt] = useState(promptTemplates[0].text);
   const [selectedPromptId, setSelectedPromptId] = useState('custom');
-  const [productImage, setProductImage] = useState<File | null>(null);
-  const [productImagePreview, setProductImagePreview] = useState<string>('');
+  const [productImages, setProductImages] = useState<File[]>([]);
+  const [productImagePreviews, setProductImagePreviews] = useState<string[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<string>('');
   const [isDragging, setIsDragging] = useState(false);
   const [showTemplates, setShowTemplates] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
   
   const handleProductImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      processUploadedFile(file);
+    const files = e.target.files;
+    if (files) {
+      for (let i = 0; i < files.length; i++) {
+        processUploadedFile(files[i]);
+      }
     }
   };
 
   const processUploadedFile = (file: File) => {
-    setProductImage(file);
+    setProductImages(prev => [...prev, file]);
     const reader = new FileReader();
     reader.onloadend = () => {
-      setProductImagePreview(reader.result as string);
+      setProductImagePreviews(prev => [...prev, reader.result as string]);
     };
     reader.readAsDataURL(file);
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setProductImages(prev => prev.filter((_, i) => i !== index));
+    setProductImagePreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -85,15 +94,17 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
     
     const files = e.dataTransfer.files;
     if (files.length > 0) {
-      const file = files[0];
-      if (file.type.startsWith('image/')) {
-        processUploadedFile(file);
-      } else {
-        toast({
-          title: "Invalid file type",
-          description: "Please upload an image file.",
-          variant: "destructive",
-        });
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (file.type.startsWith('image/')) {
+          processUploadedFile(file);
+        } else {
+          toast({
+            title: "Invalid file type",
+            description: "Please upload an image file.",
+            variant: "destructive",
+          });
+        }
       }
     }
   };
@@ -160,20 +171,70 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
 
   const handleGenerateAd = async () => {
     try {
-      toast({
-        title: "Coming Soon!",
-        description: "Join our waitlist to be the first to generate ads with Adworthy.",
-        action: (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => window.open('https://buy.stripe.com/7sIaGp7yn9Da24MdQQ', '_blank')}
-            className="font-jakarta"
-          >
-            Join Waitlist
-          </Button>
-        ),
+      setIsGenerating(true);
+      
+      const supabase = createClient(
+        import.meta.env.VITE_SUPABASE_URL,
+        import.meta.env.VITE_SUPABASE_ANON_KEY
+      );
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Error",
+          description: "Please sign in to generate ads",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // First, upload the images to Supabase Storage
+      const uploadedImageUrls = await Promise.all(
+        productImages.map(async (file) => {
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${user.id}/${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+          
+          const { data, error } = await supabase.storage
+            .from('generated-ads')
+            .upload(fileName, file, {
+              contentType: file.type,
+              upsert: true
+            });
+
+          if (error) throw error;
+
+          return `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/generated-ads/${data.path}`;
+        })
+      );
+
+      // Then call the Edge Function with the image URLs
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-ad`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          images: uploadedImageUrls,
+          prompt: prompt,
+          userId: user.id,
+        }),
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate ad');
+      }
+
+      const result = await response.json();
+      
+      toast({
+        title: "Success!",
+        description: "Your ad has been generated successfully.",
+      });
+
+      // Navigate to the generated ads page
+      navigate('/generated-ads');
+      
     } catch (error) {
       console.error('Error:', error);
       toast({
@@ -181,6 +242,8 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
         description: "Something went wrong. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsGenerating(false);
     }
   };
   
@@ -194,59 +257,69 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
             <DialogTitle className="text-2xl font-semibold">Repurpose This Ad Style</DialogTitle>
           </div>
           <DialogDescription>
-            Upload your product image and customize the prompt to create your inspired ad.
+            Upload your product images and customize the prompt to create your inspired ads.
           </DialogDescription>
         </DialogHeader>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
           <div className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="product-image">1. Upload Your Product Image</Label>
+              <Label htmlFor="product-images">1. Upload Your Product Images</Label>
               <div className="flex flex-col gap-2">
                 <div 
                   className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer 
                     ${isDragging ? 'border-primary bg-primary/5' : 'border-gray-300'} 
-                    ${productImagePreview ? '' : 'hover:border-primary hover:bg-primary/5'}`}
+                    ${productImagePreviews.length > 0 ? '' : 'hover:border-primary hover:bg-primary/5'}`}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
-                  onClick={productImagePreview ? undefined : handleClickUpload}
+                  onClick={productImagePreviews.length > 0 ? undefined : handleClickUpload}
                 >
-                  {productImagePreview ? (
-                    <div className="relative">
-                      <img 
-                        src={productImagePreview} 
-                        alt="Product preview" 
-                        className="max-h-48 mx-auto rounded-lg"
-                      />
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="absolute top-2 right-2 bg-white/80 hover:bg-white"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setProductImage(null);
-                          setProductImagePreview('');
-                          setAnalysisResult('');
-                        }}
+                  {productImagePreviews.length > 0 ? (
+                    <div className="grid grid-cols-2 gap-4">
+                      {productImagePreviews.map((preview, index) => (
+                        <div key={index} className="relative">
+                          <img 
+                            src={preview} 
+                            alt={`Product preview ${index + 1}`} 
+                            className="w-full h-32 object-cover rounded-lg"
+                          />
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="absolute top-2 right-2 bg-white/80 hover:bg-white"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemoveImage(index);
+                            }}
+                          >
+                            <X size={16} />
+                          </Button>
+                        </div>
+                      ))}
+                      <div 
+                        className="border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:border-primary"
+                        onClick={handleClickUpload}
                       >
-                        <X size={16} />
-                      </Button>
+                        <ImageIcon className="mx-auto h-8 w-8 text-gray-400" />
+                        <p className="text-sm text-gray-600 mt-2">Add more images</p>
+                      </div>
                     </div>
                   ) : (
                     <div className="space-y-2">
                       <ImageIcon className="mx-auto h-12 w-12 text-gray-400" />
                       <div className="text-sm text-gray-600">
                         <span className="relative cursor-pointer rounded-md font-medium text-black hover:text-gray-800">
-                          <span>Upload a file</span>
+                          <span>Upload files</span>
                           <input
-                            id="product-image-upload"
-                            name="product-image"
+                            id="product-images-upload"
+                            name="product-images"
                             type="file"
                             className="sr-only"
                             accept="image/*"
                             onChange={handleProductImageUpload}
                             ref={fileInputRef}
+                            multiple
                           />
                         </span>
                         <p className="pl-1">or drag and drop</p>
@@ -324,9 +397,19 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
           <Button 
             onClick={handleGenerateAd} 
             className="gap-1.5 bg-black text-white shadow-one"
+            disabled={isGenerating || productImages.length === 0}
           >
-            <Download size={16} />
-            3. Generate Inspired Ad
+            {isGenerating ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Generating...
+              </>
+            ) : (
+              <>
+                <Download size={16} />
+                3. Generate Inspired Ad
+              </>
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

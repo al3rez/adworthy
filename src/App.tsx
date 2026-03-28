@@ -48,6 +48,7 @@ const AppRoutes = () => {
         </ProtectedRoute>
       } />
       <Route path="/auth" element={<Auth />} />
+      <Route path="/generated-ads" element={<Creatives />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
