@@ -210,7 +210,7 @@ const Landing: FC = () => {
               <div className="relative rounded-2xl p-8 border-2 border-gray-300 bg-white">
                 <h2 className="text-2xl font-bold text-black font-jakarta">Starter</h2>
                 <div className="mt-4">
-                  <span className="text-4xl font-bold text-black">$19</span>
+                  <span className="text-4xl font-bold text-black">$29</span>
                   <span className="text-[#545454]">/month</span>
                 </div>
                 <p className="text-[#545454] mt-2">100 credits/month</p>
