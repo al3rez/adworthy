@@ -34,7 +34,7 @@ const PRICING_PLANS = [
       'Basic templates',
       '$1.50 per additional credit'
     ],
-    paymentLink: "https://buy.stripe.com/fZe6q98Cr6qY4cU5klk"
+    paymentLink: "https://buy.stripe.com/fZe6q98Cr6qY4cU5kl"
   },
   {
     name: 'Pro',
