@@ -10,6 +10,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Landing: FC = () => {
   const navigate = useNavigate();
@@ -95,6 +97,36 @@ const Landing: FC = () => {
     }
   }, [isLoading, templates]);
   
+  const handleSubscribe = async (priceId: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user?.email) {
+        navigate('/auth');
+        return;
+      }
+
+      // Get payment link for the selected price
+      const { data: paymentLink, error } = await supabase.functions.invoke('get-payment-link', {
+        body: {
+          priceId,
+          customerEmail: user.email
+        }
+      });
+
+      if (error) throw error;
+
+      // Redirect to payment link
+      window.location.href = paymentLink.url;
+    } catch (error) {
+      console.error('Error getting payment link:', error);
+      toast({
+        title: "Error",
+        description: "Failed to get payment link. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen">
       {/* Navigation header */}
@@ -139,10 +171,10 @@ const Landing: FC = () => {
               <Button 
                 size="lg" 
                 className="shadow-one bg-black hover:bg-black/90 text-white px-8 py-6 text-lg rounded-xl font-jakarta"
-                onClick={() => window.open('https://buy.stripe.com/7sIaGp7yn9Da24MdQQ', '_blank')}
+                onClick={() => navigate("/auth")}
               >
                 <Power className="mr-2" />
-                Join Waitlist
+                Get Started
               </Button>
               <Button 
                 variant="outline" 
@@ -298,10 +330,10 @@ const Landing: FC = () => {
               <div className="relative rounded-2xl p-8 border-2 border-gray-300 bg-white">
                 <h2 className="text-2xl font-bold text-black font-jakarta">Starter</h2>
                 <div className="mt-4">
-                  <span className="text-4xl font-bold text-black">$29</span>
+                  <span className="text-4xl font-bold text-black">$49</span>
                   <span className="text-[#545454]">/month</span>
                 </div>
-                <p className="text-[#545454] mt-2">100 credits/month</p>
+                <p className="text-[#545454] mt-2">40 credits/month</p>
                 <div className="h-px bg-gray-300 my-6"></div>
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
@@ -318,10 +350,10 @@ const Landing: FC = () => {
                   </div>
                 </div>
                 <button 
-                  onClick={() => window.open('https://buy.stripe.com/7sIaGp7yn9Da24MdQQ', '_blank')}
+                  onClick={() => handleSubscribe('price_1R8fSzLgmuRphCPw8u9mu793')}
                   className="mt-8 w-full py-3 px-6 rounded-xl bg-black text-white hover:bg-black/90 transition-colors font-jakarta"
                 >
-                  Join Waitlist
+                  Get Started
                 </button>
               </div>
 
@@ -332,19 +364,15 @@ const Landing: FC = () => {
                 </div>
                 <h2 className="text-2xl font-bold text-black font-jakarta">Pro</h2>
                 <div className="mt-4">
-                  <span className="text-4xl font-bold text-black">$49</span>
+                  <span className="text-4xl font-bold text-black">$99</span>
                   <span className="text-[#545454]">/month</span>
                 </div>
-                <p className="text-[#545454] mt-2">500 credits/month</p>
+                <p className="text-[#545454] mt-2">100 credits/month</p>
                 <div className="h-px bg-gray-300 my-6"></div>
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
                     <span className="text-green-500">✓</span>
-                    <span className="text-[#545454]">1 credit = 1 ad generation</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-green-500">✓</span>
-                    <span className="text-[#545454]">Style matching from Pinterest</span>
+                    <span className="text-[#545454]">Everything in Starter</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-green-500">✓</span>
@@ -352,14 +380,14 @@ const Landing: FC = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-green-500">✓</span>
-                    <span className="text-[#545454]">A/B testing (coming soon)</span>
+                    <span className="text-[#545454]">A/B testing</span>
                   </div>
                 </div>
                 <button 
-                  onClick={() => window.open('https://buy.stripe.com/7sIaGp7yn9Da24MdQQ', '_blank')}
+                  onClick={() => handleSubscribe('price_1R8fSzLgmuRphCPw8u9mu794')}
                   className="mt-8 w-full py-3 px-6 rounded-xl bg-blue-500 text-white hover:bg-blue-600 transition-colors font-jakarta"
                 >
-                  Join Waitlist
+                  Get Started
                 </button>
               </div>
 
@@ -367,38 +395,30 @@ const Landing: FC = () => {
               <div className="relative rounded-2xl p-8 border-2 border-gray-300 bg-white">
                 <h2 className="text-2xl font-bold text-black font-jakarta">Enterprise</h2>
                 <div className="mt-4">
-                  <span className="text-4xl font-bold text-black">$99</span>
+                  <span className="text-4xl font-bold text-black">$249</span>
                   <span className="text-[#545454]">/month</span>
                 </div>
-                <p className="text-[#545454] mt-2">1500 credits/month</p>
+                <p className="text-[#545454] mt-2">300 credits/month</p>
                 <div className="h-px bg-gray-300 my-6"></div>
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
                     <span className="text-green-500">✓</span>
-                    <span className="text-[#545454]">1 credit = 1 ad generation</span>
+                    <span className="text-[#545454]">Everything in Pro</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-green-500">✓</span>
-                    <span className="text-[#545454]">Style matching from Pinterest</span>
+                    <span className="text-[#545454]">Priority support</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-green-500">✓</span>
-                    <span className="text-[#545454]">All templates</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-green-500">✓</span>
-                    <span className="text-[#545454]">A/B testing (coming soon)</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-green-500">✓</span>
-                    <span className="text-[#545454]">Facebook Ads API (coming soon)</span>
+                    <span className="text-[#545454]">Facebook Ads API</span>
                   </div>
                 </div>
                 <button 
-                  onClick={() => window.open('https://buy.stripe.com/7sIaGp7yn9Da24MdQQ', '_blank')}
+                  onClick={() => handleSubscribe('price_1R8fSzLgmuRphCPw8u9mu795')}
                   className="mt-8 w-full py-3 px-6 rounded-xl bg-black text-white hover:bg-black/90 transition-colors font-jakarta"
                 >
-                  Join Waitlist
+                  Get Started
                 </button>
               </div>
             </div>

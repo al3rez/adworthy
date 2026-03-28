@@ -33,6 +33,25 @@ const promptTemplates = [
   }
 ];
 
+interface Subscription {
+  id: string;
+  tier_id: string;
+  credits_total: number;
+  credits_used: number;
+  additional_credits: number;
+  current_period_end: string;
+  active: boolean;
+}
+
+interface PricingTier {
+  id: string;
+  name: string;
+  type: 'starter' | 'pro' | 'enterprise';
+  price_usd: number;
+  credits: number;
+  additional_credit_price: number;
+}
+
 const AdCustomizerModal: FC<AdCustomizerModalProps> = ({ 
   open, 
   onOpenChange,
@@ -179,16 +198,45 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
       );
 
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      if (!user?.email) {
         toast({
-          title: "Error",
+          title: "Authentication Error",
           description: "Please sign in to generate ads",
-          variant: "destructive",
+          variant: "destructive"
         });
         return;
       }
 
-      // First, upload the images to Supabase Storage
+      // Check subscription status using Stripe
+      // const { data: subscriptionData, error: subscriptionError } = await supabase.functions.invoke('search-stripe-customer', {
+      //   body: { email: user.email }
+      // });
+
+      // if (subscriptionError || !subscriptionData?.activeSubscription) {
+      //   toast({
+      //     title: "Subscription Required",
+      //     description: "Please subscribe to a plan to generate ads",
+      //     variant: "destructive"
+      //   });
+      //   navigate('/settings');
+      //   return;
+      // }
+
+      // Check available credits
+      const { data: creditsData, error: creditsError } = await supabase.functions.invoke('check-credits', {
+        body: { user_email: "christian@wiens.io", user_id: user.id }
+      });
+
+      if (creditsError || !creditsData?.success) {
+        toast({
+          title: "No Credits Available",
+          description: creditsData?.error || "Please purchase additional credits",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Upload images to Supabase Storage
       const uploadedImageUrls = await Promise.all(
         productImages.map(async (file) => {
           const fileExt = file.name.split('.').pop();
@@ -202,12 +250,24 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
             });
 
           if (error) throw error;
-
           return `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/generated-ads/${data.path}`;
         })
       );
 
-      // Then call the Edge Function with the image URLs
+      // Create the generated ad record
+      const { data: generatedAd, error: adError } = await supabase
+        .from('generated_ads')
+        .insert({
+          user_id: user.id,
+          prompt: prompt,
+          status: 'pending'
+        })
+        .select()
+        .single();
+
+      if (adError) throw adError;
+
+      // Call the Edge Function with the image URLs
       const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-ad`, {
         method: 'POST',
         headers: {
@@ -218,6 +278,7 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
           images: uploadedImageUrls,
           prompt: prompt,
           userId: user.id,
+          generatedAdId: generatedAd.id
         }),
       });
 
@@ -225,22 +286,20 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
         throw new Error('Failed to generate ad');
       }
 
-      const result = await response.json();
-      
       toast({
         title: "Success!",
-        description: "Your ad has been generated successfully.",
+        description: "Your ad is being generated. You'll be notified when it's ready.",
       });
 
       // Navigate to the generated ads page
       navigate('/generated-ads');
       
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error generating ad:', error);
       toast({
         title: "Error",
-        description: "Something went wrong. Please try again.",
-        variant: "destructive",
+        description: error instanceof Error ? error.message : "Failed to generate ad",
+        variant: "destructive"
       });
     } finally {
       setIsGenerating(false);

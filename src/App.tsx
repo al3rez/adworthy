@@ -7,12 +7,14 @@ import { useEffect } from "react";
 import { AuthProvider, useAuth } from "@/components/AuthProvider";
 import { CreditsProvider } from "@/contexts/CreditsContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import SubscriptionProtectedRoute from "@/components/SubscriptionProtectedRoute";
 import Landing from "./pages/Landing";
 import Analyze from "./pages/Analyze";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
 import Creatives from "./pages/Creatives";
+import Settings from "./pages/Settings";
 
 // Import global styles
 import "@/styles/globals.css";
@@ -39,7 +41,9 @@ const AppRoutes = () => {
       } />
       <Route path="/creations" element={
         <ProtectedRoute>
-          <Creatives />
+          <SubscriptionProtectedRoute>
+            <Creatives />
+          </SubscriptionProtectedRoute>
         </ProtectedRoute>
       } />
       <Route path="/collections/:id" element={
@@ -48,7 +52,18 @@ const AppRoutes = () => {
         </ProtectedRoute>
       } />
       <Route path="/auth" element={<Auth />} />
-      <Route path="/generated-ads" element={<Creatives />} />
+      <Route path="/generated-ads" element={
+        <ProtectedRoute>
+          <SubscriptionProtectedRoute>
+            <Creatives />
+          </SubscriptionProtectedRoute>
+        </ProtectedRoute>
+      } />
+      <Route path="/settings" element={
+        <ProtectedRoute>
+          <Settings />
+        </ProtectedRoute>
+      } />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

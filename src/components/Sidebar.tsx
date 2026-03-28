@@ -1,18 +1,15 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, LogOut, Coins, Image } from 'lucide-react';
+import { Home, LogOut, Image, Settings, CreditCard } from 'lucide-react';
 import { useAuth } from '@/components/AuthProvider';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Progress } from '@/components/ui/progress';
-import { useCredits } from '@/contexts/CreditsContext';
 import { Button } from '@/components/ui/button';
 
 const Sidebar: FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, signOut } = useAuth();
-  const { credits, currentlyGenerating } = useCredits();
-  
+
   return (
     <div className="bg-white border-r-[1px] border-r-lightgrey overflow-y-auto h-screen w-full flex flex-col items-center pt-9 text-[#536772] font-jakarta">
       <div className="flex flex-col items-center gap-10 mb-10">
@@ -26,9 +23,9 @@ const Sidebar: FC = () => {
           </div>
         </div>
         
-        <div className="flex flex-col items-center gap-4 text-daisygrey">
+        <div className="flex flex-col items-center gap-4 text-daisygrey w-64">
           <div 
-            className={`p-3 cursor-pointer font-extrabold w-64 flex items-center gap-3 rounded-xl ${location.pathname === '/dashboard' || location.pathname === '/' ? 'shadow-one bg-black text-white' : 'hover:bg-gray-50'}`}
+            className={`p-3 cursor-pointer font-extrabold w-full flex items-center gap-3 rounded-xl ${location.pathname === '/dashboard' || location.pathname === '/' ? 'shadow-one bg-black text-white' : 'hover:bg-gray-50'}`}
             onClick={() => navigate('/dashboard')}
           >
             <Home size={20} />
@@ -36,33 +33,24 @@ const Sidebar: FC = () => {
           </div>
           
           <div 
-            className={`p-3 cursor-pointer font-extrabold w-64 flex items-center gap-3 rounded-xl ${location.pathname === '/creations' ? 'shadow-one bg-black text-white' : 'hover:bg-gray-50'}`}
+            className={`p-3 cursor-pointer font-extrabold w-full flex items-center gap-3 rounded-xl ${location.pathname === '/creations' ? 'shadow-one bg-black text-white' : 'hover:bg-gray-50'}`}
             onClick={() => navigate('/creations')}
           >
             <Image size={20} />
             <p>Generated Ads</p>
           </div>
-        </div>
-      </div>
-      
-      {/* Spacer to push the user profile to the bottom */}
-      <div className="flex-grow"></div>
-      
-      <div className="w-full px-7 py-6 mt-auto">
-        {/* Waitlist Widget */}
-        <div className="bg-white rounded-xl p-4 border-[1px] border-lightgrey">
-          <div className="flex flex-col items-center gap-3">
-            <span className="text-sm font-medium text-black font-jakarta">Coming Soon!</span>
-            <Button
-              onClick={() => window.open('https://buy.stripe.com/7sIaGp7yn9Da24MdQQ', '_blank')}
-              className="w-full bg-black hover:bg-black/90 text-white font-jakarta"
-            >
-              Join Waitlist
-            </Button>
+
+          <div 
+            className={`p-3 cursor-pointer font-extrabold w-full flex items-center gap-3 rounded-xl ${location.pathname === '/settings' ? 'shadow-one bg-black text-white' : 'hover:bg-gray-50'}`}
+            onClick={() => navigate('/settings')}
+          >
+            <Settings size={20} />
+            <p>Settings</p>
           </div>
         </div>
       </div>
 
+      {/* User Profile */}
       {user && (
         <div className="w-full px-7 py-6 border-t-[1px] border-lightgrey mt-auto">
           <div className="flex items-center justify-between mb-4">

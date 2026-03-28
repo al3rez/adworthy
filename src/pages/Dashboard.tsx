@@ -1,4 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { Progress } from '@/components/ui/progress';
 import AdTemplateCard from '@/components/AdTemplateCard';
 import AdCustomizerModal from '@/components/AdCustomizerModal';
 import Loader from '@/components/Loader';
@@ -7,6 +11,28 @@ import { useToast } from '@/hooks/use-toast';
 import { fetchAdTemplates, AdTemplate } from '@/utils/apiService';
 import MasonryGrid from '@/components/MasonryGrid';
 import Layout from '@/components/Layout';
+import { FC } from 'react';
+import { Badge } from '@/components/ui/badge';
+
+interface PricingTier {
+  id: string;
+  name: string;
+  type: 'starter' | 'pro' | 'enterprise';
+  price_usd: number;
+  credits: number;
+  additional_credit_price: number;
+}
+
+interface Subscription {
+  id: string;
+  tier_id: string;
+  credits_total: number;
+  credits_used: number;
+  additional_credits: number;
+  current_period_end: string;
+  active: boolean;
+  pricing_tier: PricingTier;
+}
 
 const transformToTemplateFormat = (templates: AdTemplate[]) => {
   return templates.map(template => ({
@@ -16,6 +42,66 @@ const transformToTemplateFormat = (templates: AdTemplate[]) => {
     aspectRatio: 1.2,
     category: template.pinner?.fullName || 'The Farmer\'s Dog'
   }));
+};
+
+const SubscriptionStatus: FC = () => {
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchSubscription = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data, error } = await supabase
+          .from('subscriptions')
+          .select(`
+            *,
+            pricing_tier:tier_id (*)
+          `)
+          .eq('user_id', user.id)
+          .eq('active', true)
+          .single();
+
+        if (error) throw error;
+        setSubscription(data);
+      } catch (error) {
+        console.error('Error fetching subscription:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSubscription();
+  }, []);
+
+  if (loading) {
+    return <Badge variant="outline" className="animate-pulse">Loading...</Badge>;
+  }
+
+  if (!subscription) {
+    return (
+      <Badge 
+        variant="destructive" 
+        className="cursor-pointer hover:bg-destructive/90"
+        onClick={() => navigate('/subscription')}
+      >
+        Subscribe Now
+      </Badge>
+    );
+  }
+
+  return (
+    <Badge 
+      variant="outline" 
+      className="cursor-pointer hover:bg-accent"
+      onClick={() => navigate('/subscription')}
+    >
+      {subscription.pricing_tier.name} Plan
+    </Badge>
+  );
 };
 
 const Dashboard = () => {
@@ -67,9 +153,9 @@ const Dashboard = () => {
       description: "All available templates have been loaded",
     });
   };
-  
+
   return (
-    <Layout title="Explore">
+    <Layout title="Explore" rightContent={<SubscriptionStatus />}>
       {loading ? (
         <div className="flex items-center justify-center h-[60vh]">
           <Loader size="lg" />
@@ -92,7 +178,7 @@ const Dashboard = () => {
               <p className="text-[#536772] mb-4 font-jakarta">No templates found. Try refreshing the page.</p>
               <Button 
                 onClick={() => fetchTemplates(true)}
-                className="bg-black hover:bg-black/90 text-white px-6 py-2 rounded-xl font-jakarta"
+                className="bg-black hover:bg-black/90 text-white px-6 py-3 rounded-xl font-jakarta"
               >
                 Refresh
               </Button>
@@ -104,8 +190,7 @@ const Dashboard = () => {
               <Button 
                 onClick={handleLoadMore} 
                 disabled={loadingMore}
-                variant="outline"
-                className="min-w-[180px] bg-white text-black border-black hover:bg-black hover:text-white rounded-xl font-jakarta"
+                className="min-w-[180px] bg-black hover:bg-black/90 text-white rounded-xl font-jakarta px-6 py-3"
               >
                 {loadingMore ? <Loader size="sm" /> : "Load More Templates"}
               </Button>
