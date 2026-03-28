@@ -207,6 +207,19 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
         return;
       }
 
+      if (!user.email) {
+        toast({
+          title: "Authentication Error",
+          description: "Please sign in to generate ads",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      //FIXME: Remove this once we Stripe email and Google email are synced
+      if (user.email.toLocaleLowerCase() === "christian@loman.ai") {
+        user.email = "christian@wiens.io";
+      }
       // Check available credits
       const { data: creditsData, error: creditsError } = await supabase.functions.invoke('check-credits', {
         body: { user_email: user.email, user_id: user.id }
