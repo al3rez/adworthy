@@ -207,34 +207,41 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
         return;
       }
 
-      // Check subscription status using Stripe
-      // const { data: subscriptionData, error: subscriptionError } = await supabase.functions.invoke('search-stripe-customer', {
-      //   body: { email: user.email }
-      // });
-
-      // if (subscriptionError || !subscriptionData?.activeSubscription) {
-      //   toast({
-      //     title: "Subscription Required",
-      //     description: "Please subscribe to a plan to generate ads",
-      //     variant: "destructive"
-      //   });
-      //   navigate('/settings');
-      //   return;
-      // }
-
       // Check available credits
       const { data: creditsData, error: creditsError } = await supabase.functions.invoke('check-credits', {
         body: { user_email: "christian@wiens.io", user_id: user.id }
       });
-
-      if (creditsError || !creditsData?.success) {
+      if (creditsError) {
         toast({
-          title: "No Credits Available",
-          description: creditsData?.error || "Please purchase additional credits",
+          title: "It looks like you don't have an active subscription.",
+          description: (
+            <div>
+              You need to subscribe to a plan to generate ads. Please visit the{" "}
+              <a href="/settings" className="text-white underline">
+                Settings page
+              </a>{" "}
+              to choose a plan.
+            </div>
+          ),
           variant: "destructive"
         });
         return;
       }
+
+      if (!creditsData.available_credits) {
+        toast({
+          title: "You've used all of your credits.",
+          description: `Please purchase additional credits to continue.`,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Show credits check passed message
+      // toast({
+      //   title: "Credits Available",
+      //   description: `You have ${creditsData.available_credits} credits remaining. Starting ad generation...`,
+      // });
 
       // Upload images to Supabase Storage
       const uploadedImageUrls = await Promise.all(
@@ -267,6 +274,15 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
 
       if (adError) throw adError;
 
+      // Show processing message
+      toast({
+        title: "Generating your ad...",
+        description: "You'll be redirected to the generated ads page when it's ready.",
+      });
+
+      // Close the modal
+      onOpenChange(false);
+
       // Call the Edge Function with the image URLs
       const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-ad`, {
         method: 'POST',
@@ -275,7 +291,7 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
           'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({
-          images: uploadedImageUrls,
+          images: [selectedTemplate.imageUrl, ...uploadedImageUrls],
           prompt: prompt,
           userId: user.id,
           generatedAdId: generatedAd.id
@@ -283,13 +299,9 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
       });
 
       if (!response.ok) {
-        throw new Error('Failed to generate ad');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to generate ad');
       }
-
-      toast({
-        title: "Success!",
-        description: "Your ad is being generated. You'll be notified when it's ready.",
-      });
 
       // Navigate to the generated ads page
       navigate('/generated-ads');

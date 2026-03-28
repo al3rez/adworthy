@@ -81,12 +81,11 @@ serve(async (req) => {
     // Create a record in the generated_ads table
     const { data: dbData, error: dbError } = await supabaseClient
       .from('generated_ads')
-      .insert({
-        user_id: userId,
+      .update({
         image_url: storageData.path,
-        prompt: prompt,
         status: 'completed'
       })
+      .eq('id', body.generatedAdId)
       .select()
       .single()
 
