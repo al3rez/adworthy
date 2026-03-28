@@ -4,11 +4,18 @@ import { Button } from '@/components/ui/button';
 import { Play, Power } from 'lucide-react';
 import MasonryGrid from '@/components/MasonryGrid';
 import { fetchAdTemplates, AdTemplate } from '@/utils/apiService';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const Landing: FC = () => {
   const navigate = useNavigate();
   const [templates, setTemplates] = useState<AdTemplate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showDemo, setShowDemo] = useState(false);
   
   useEffect(() => {
     const loadTemplates = async () => {
@@ -36,6 +43,12 @@ const Landing: FC = () => {
           <nav className="hidden md:flex items-center gap-8">
             <a href="#features" className="text-[#536772] hover:text-black font-jakarta">Product</a>
             <a href="#pricing" className="text-[#536772] hover:text-black font-jakarta">Pricing</a>
+            <button 
+              onClick={() => navigate("/auth")}
+              className="shadow-one bg-black hover:bg-black/90 text-white py-2 px-4 rounded-xl font-jakarta"
+            >
+              Sign up for free
+            </button>
           </nav>
         </div>
       </header>
@@ -58,7 +71,7 @@ const Landing: FC = () => {
               <Button 
                 size="lg" 
                 className="shadow-one bg-black hover:bg-black/90 text-white px-8 py-6 text-lg rounded-xl font-jakarta"
-                onClick={() => window.open('https://buy.stripe.com/test_XXXXXXXXXXXXX', '_blank')}
+                onClick={() => window.open('https://buy.stripe.com/7sIaGp7yn9Da24MdQQ', '_blank')}
               >
                 <Power className="mr-2" />
                 Join Waitlist
@@ -67,6 +80,7 @@ const Landing: FC = () => {
                 variant="outline" 
                 size="lg" 
                 className="bg-white text-black px-8 py-6 text-lg rounded-xl font-jakarta"
+                onClick={() => setShowDemo(true)}
               >
                 <Play className="mr-2" />
                 Watch Demo
@@ -216,7 +230,7 @@ const Landing: FC = () => {
                   </div>
                 </div>
                 <button 
-                  onClick={() => window.open('https://buy.stripe.com/test_XXXXXXXXXXXXX', '_blank')}
+                  onClick={() => window.open('https://buy.stripe.com/7sIaGp7yn9Da24MdQQ', '_blank')}
                   className="mt-8 w-full py-3 px-6 rounded-xl bg-black text-white hover:bg-black/90 transition-colors font-jakarta"
                 >
                   Join Waitlist
@@ -254,7 +268,7 @@ const Landing: FC = () => {
                   </div>
                 </div>
                 <button 
-                  onClick={() => window.open('https://buy.stripe.com/test_XXXXXXXXXXXXX', '_blank')}
+                  onClick={() => window.open('https://buy.stripe.com/7sIaGp7yn9Da24MdQQ', '_blank')}
                   className="mt-8 w-full py-3 px-6 rounded-xl bg-blue-500 text-white hover:bg-blue-600 transition-colors font-jakarta"
                 >
                   Join Waitlist
@@ -303,6 +317,23 @@ const Landing: FC = () => {
           </div>
         </section>
       </div>
+
+      {/* Add this modal component anywhere inside the main return */}
+      <Dialog open={showDemo} onOpenChange={setShowDemo}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Product Demo</DialogTitle>
+          </DialogHeader>
+          <video 
+            className="w-full rounded-lg" 
+            controls 
+            autoPlay
+          >
+            <source src="/demo.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
