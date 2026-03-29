@@ -1,4 +1,5 @@
-import { FC, useState } from 'react';
+
+import { FC, useState, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -22,19 +23,61 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
   const [productImagePreview, setProductImagePreview] = useState<string>('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<string>('');
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const handleProductImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setProductImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProductImagePreview(reader.result as string);
-        // Automatically analyze the image when uploaded
-        analyzeImage(file);
-      };
-      reader.readAsDataURL(file);
+      processUploadedFile(file);
     }
+  };
+
+  const processUploadedFile = (file: File) => {
+    setProductImage(file);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setProductImagePreview(reader.result as string);
+      // Automatically analyze the image when uploaded
+      analyzeImage(file);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+  
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+  
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      const file = files[0];
+      if (file.type.startsWith('image/')) {
+        processUploadedFile(file);
+      } else {
+        toast({
+          title: "Invalid file type",
+          description: "Please upload an image file.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
+  const handleClickUpload = () => {
+    fileInputRef.current?.click();
   };
 
   const analyzeImage = async (file: File | null) => {
@@ -144,7 +187,15 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
             <div className="space-y-2">
               <Label htmlFor="product-image">1. Upload Your Product Image</Label>
               <div className="flex flex-col gap-2">
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                <div 
+                  className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer 
+                    ${isDragging ? 'border-primary bg-primary/5' : 'border-gray-300'} 
+                    ${productImagePreview ? '' : 'hover:border-primary hover:bg-primary/5'}`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  onClick={productImagePreview ? undefined : handleClickUpload}
+                >
                   {productImagePreview ? (
                     <div className="relative">
                       <img 
@@ -156,7 +207,8 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
                         size="icon"
                         variant="ghost"
                         className="absolute top-2 right-2 bg-white/80 hover:bg-white"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setProductImage(null);
                           setProductImagePreview('');
                           setAnalysisResult('');
@@ -169,10 +221,7 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
                     <div className="space-y-2">
                       <ImageIcon className="mx-auto h-12 w-12 text-gray-400" />
                       <div className="text-sm text-gray-600">
-                        <label
-                          htmlFor="product-image-upload"
-                          className="relative cursor-pointer rounded-md font-medium text-black hover:text-gray-800"
-                        >
+                        <span className="relative cursor-pointer rounded-md font-medium text-black hover:text-gray-800">
                           <span>Upload a file</span>
                           <input
                             id="product-image-upload"
@@ -181,8 +230,9 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
                             className="sr-only"
                             accept="image/*"
                             onChange={handleProductImageUpload}
+                            ref={fileInputRef}
                           />
-                        </label>
+                        </span>
                         <p className="pl-1">or drag and drop</p>
                       </div>
                     </div>
