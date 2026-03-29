@@ -58,10 +58,10 @@ const Landing: FC = () => {
               <Button 
                 size="lg" 
                 className="shadow-one bg-black hover:bg-black/90 text-white px-8 py-6 text-lg rounded-xl font-jakarta"
-                onClick={() => navigate('/auth')}
+                onClick={() => window.open('https://buy.stripe.com/test_XXXXXXXXXXXXX', '_blank')}
               >
                 <Power className="mr-2" />
-                Make your first ad
+                Join Waitlist
               </Button>
               <Button 
                 variant="outline" 
@@ -215,8 +215,11 @@ const Landing: FC = () => {
                     <span className="text-[#545454]">Basic templates</span>
                   </div>
                 </div>
-                <button className="mt-8 w-full py-3 px-6 rounded-xl bg-black text-white hover:bg-black/90 transition-colors font-jakarta">
-                  Get Started
+                <button 
+                  onClick={() => window.open('https://buy.stripe.com/test_XXXXXXXXXXXXX', '_blank')}
+                  className="mt-8 w-full py-3 px-6 rounded-xl bg-black text-white hover:bg-black/90 transition-colors font-jakarta"
+                >
+                  Join Waitlist
                 </button>
               </div>
 
@@ -250,8 +253,11 @@ const Landing: FC = () => {
                     <span className="text-[#545454]">A/B testing (coming soon)</span>
                   </div>
                 </div>
-                <button className="mt-8 w-full py-3 px-6 rounded-xl bg-blue-500 text-white hover:bg-blue-600 transition-colors font-jakarta">
-                  Get Started
+                <button 
+                  onClick={() => window.open('https://buy.stripe.com/test_XXXXXXXXXXXXX', '_blank')}
+                  className="mt-8 w-full py-3 px-6 rounded-xl bg-blue-500 text-white hover:bg-blue-600 transition-colors font-jakarta"
+                >
+                  Join Waitlist
                 </button>
               </div>
 
@@ -286,8 +292,11 @@ const Landing: FC = () => {
                     <span className="text-[#545454]">Facebook Ads API (coming soon)</span>
                   </div>
                 </div>
-                <button className="mt-8 w-full py-3 px-6 rounded-xl bg-black text-white hover:bg-black/90 transition-colors font-jakarta">
-                  Get Started
+                <button 
+                  onClick={() => window.open('https://buy.stripe.com/test_XXXXXXXXXXXXX', '_blank')}
+                  className="mt-8 w-full py-3 px-6 rounded-xl bg-black text-white hover:bg-black/90 transition-colors font-jakarta"
+                >
+                  Join Waitlist
                 </button>
               </div>
             </div>

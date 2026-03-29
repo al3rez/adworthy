@@ -1,4 +1,3 @@
-
 import { FC, useState, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -161,50 +160,27 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
 
   const handleGenerateAd = async () => {
     try {
-      if (!spendCredits(1)) {
-        return;
-      }
-      
-      setIsAnalyzing(true);
-      
-      const generatedAdId = addGeneratedAd({
-        title: selectedTemplate.title || 'Custom Ad',
-        imageUrl: selectedTemplate.imageUrl,
-        prompt: prompt,
-        originalTemplateId: selectedTemplate.id
-      });
-      
       toast({
-        title: "Ad generation started",
-        description: "Your customized ad will be ready shortly.",
+        title: "Coming Soon!",
+        description: "Join our waitlist to be the first to generate ads with Adworthy.",
+        action: (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => window.open('https://buy.stripe.com/7sIaGp7yn9Da24MdQQ', '_blank')}
+            className="font-jakarta"
+          >
+            Join Waitlist
+          </Button>
+        ),
       });
-
-      await analyzeImage(null);
-      
-      setTimeout(() => {
-        updateGeneratedAdStatus(generatedAdId, 'completed');
-        
-        setTimeout(() => {
-          onOpenChange(false);
-          
-          setPrompt(promptTemplates[0].text);
-          setSelectedPromptId('custom');
-          setProductImage(null);
-          setProductImagePreview('');
-          setAnalysisResult('');
-          
-          navigate('/creations');
-        }, 1000);
-      }, 2000);
     } catch (error) {
-      console.error('Error generating ad:', error);
+      console.error('Error:', error);
       toast({
-        title: "Error generating ad",
-        description: error instanceof Error ? error.message : "Failed to generate the ad. Please try again.",
+        title: "Error",
+        description: "Something went wrong. Please try again.",
         variant: "destructive",
       });
-    } finally {
-      setIsAnalyzing(false);
     }
   };
   

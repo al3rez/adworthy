@@ -8,6 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { User } from '@supabase/supabase-js';
 import { Lock, Mail, User as UserIcon, LogIn } from 'lucide-react';
+import { Turnstile } from "@marsidev/react-turnstile";
 
 const Auth = () => {
   const [email, setEmail] = useState('');
@@ -16,6 +17,7 @@ const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | undefined>(undefined);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -45,6 +47,10 @@ const Auth = () => {
     setLoading(true);
     
     try {
+      if (isSignUp && !captchaToken) {
+        throw new Error("Please complete the CAPTCHA challenge");
+      }
+
       const { error } = isSignUp 
         ? await supabase.auth.signUp({
             email,
@@ -53,11 +59,15 @@ const Auth = () => {
               data: {
                 full_name: fullName,
               },
+              captchaToken,
             },
           })
         : await supabase.auth.signInWithPassword({
             email,
             password,
+            options: {
+              captchaToken,
+            },
           });
       
       if (error) throw error;
@@ -164,10 +174,17 @@ const Auth = () => {
             />
           </div>
           
+          <div className="flex justify-center">
+            <Turnstile
+              siteKey="0x4AAAAAABDN4uTCeKozmEq5"
+              onSuccess={(token) => setCaptchaToken(token)}
+            />
+          </div>
+          
           <Button 
             type="submit" 
             className="w-full"
-            disabled={loading}
+            disabled={loading || (isSignUp && !captchaToken)}
           >
             {loading ? (
               <span className="flex items-center gap-2">

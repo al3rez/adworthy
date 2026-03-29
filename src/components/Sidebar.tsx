@@ -1,4 +1,3 @@
-
 import { FC } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Home, LogOut, Coins, Image } from 'lucide-react';
@@ -6,6 +5,7 @@ import { useAuth } from '@/components/AuthProvider';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
 import { useCredits } from '@/contexts/CreditsContext';
+import { Button } from '@/components/ui/button';
 
 const Sidebar: FC = () => {
   const navigate = useNavigate();
@@ -49,16 +49,17 @@ const Sidebar: FC = () => {
       <div className="flex-grow"></div>
       
       <div className="w-full px-7 py-6 mt-auto">
-        {/* Credit Widget */}
+        {/* Waitlist Widget */}
         <div className="bg-white rounded-xl p-4 border-[1px] border-lightgrey">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <Coins size={16} className="text-yellow-500" />
-              <span className="text-sm font-medium text-black">Credits</span>
-            </div>
-            <span className="text-sm font-medium text-black">{credits.used}/{credits.total}</span>
+          <div className="flex flex-col items-center gap-3">
+            <span className="text-sm font-medium text-black font-jakarta">Coming Soon!</span>
+            <Button
+              onClick={() => window.open('https://buy.stripe.com/7sIaGp7yn9Da24MdQQ', '_blank')}
+              className="w-full bg-black hover:bg-black/90 text-white font-jakarta"
+            >
+              Join Waitlist
+            </Button>
           </div>
-          <Progress value={credits.percentage} className="h-2" />
         </div>
       </div>
 
