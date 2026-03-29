@@ -38,8 +38,7 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
     const reader = new FileReader();
     reader.onloadend = () => {
       setProductImagePreview(reader.result as string);
-      // Automatically analyze the image when uploaded
-      analyzeImage(file);
+      // No longer automatically analyze the image when uploaded
     };
     reader.readAsDataURL(file);
   };
@@ -273,18 +272,7 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
                 alt={selectedTemplate.title}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 flex items-center justify-center">
-                {productImagePreview ? (
-                  <div className="p-6 bg-black/70 backdrop-blur-sm rounded-lg text-white animate-fade-in w-full h-full flex flex-col items-center justify-center">
-                    <img 
-                      src={productImagePreview} 
-                      alt="Product preview" 
-                      className="max-h-48 rounded-lg mb-4"
-                    />
-                  </div>
-                ) : (
-                <></>)}
-              </div>
+              {/* Removed the product image overlay on the ad template */}
             </div>
           </div>
         </div>
