@@ -21,7 +21,7 @@ const Landing: FC = () => {
   }, []);
   
   return (
-    <div className="min-h-screen  max-w-7xl mx-auto">
+    <div className="min-h-screen  max-w-6xl mx-auto">
       {/* Navigation header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm py-4 px-6 border-b border-lightgrey">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -36,13 +36,6 @@ const Landing: FC = () => {
           <nav className="hidden md:flex items-center gap-8">
             <a href="#features" className="text-[#536772] hover:text-black font-jakarta">Product</a>
             <a href="#pricing" className="text-[#536772] hover:text-black font-jakarta">Pricing</a>
-            <Button 
-              variant="outline" 
-              className="ml-4 font-jakarta"
-              onClick={() => navigate('/auth')}
-            >
-              Sign In
-            </Button>
           </nav>
         </div>
       </header>
@@ -107,64 +100,192 @@ const Landing: FC = () => {
           )}
         </div>
       </section>
-
-      {/* Ad Examples Section */}
-      <section className="py-24 px-6">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-black mb-4 text-center font-jakarta">
-            See how we swallow it
+      {/* Pain Points Section */}
+      <section className="py-16 px-6 bg-gray-50">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-black mb-12 text-center font-jakarta">
+          Done in seconds, not days (or dollars)
           </h2>
-          <p className="text-[#536772] text-center mb-12 font-jakarta">
-            Transform any ad into a viral TikTok format
-          </p>
-          
-          <MasonryGrid className="px-4">
-            {[
-              {
-                title: "Pinterest Ad → TikTok",
-                description: "Turn static Pinterest ads into engaging vertical videos",
-                image: "/lovable-uploads/pinterest-example.png"
-              },
-              {
-                title: "Facebook Ad → TikTok",
-                description: "Convert Facebook carousel ads into TikTok stories",
-                image: "/lovable-uploads/facebook-example.png"
-              },
-              {
-                title: "Instagram Post → TikTok",
-                description: "Transform Instagram posts into TikTok trends",
-                image: "/lovable-uploads/instagram-example.png"
-              },
-              {
-                title: "YouTube Ad → TikTok",
-                description: "Repurpose YouTube ads for TikTok success",
-                image: "/lovable-uploads/youtube-example.png"
-              },
-              {
-                title: "Google Display → TikTok",
-                description: "Convert display ads into TikTok-friendly content",
-                image: "/lovable-uploads/google-example.png"
-              }
-            ].map((item, index) => (
-              <div 
-                key={index}
-                className="bg-white rounded-2xl shadow-one overflow-hidden group cursor-pointer hover:shadow-xl transition-shadow duration-300"
-              >
-                <div className="aspect-video relative overflow-hidden">
-                  <img 
-                    src={item.image} 
-                    alt={item.title}
-                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-white p-6 rounded-2xl shadow-one border-2 border-red-500">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-red-500 text-xl">✕</span>
+                <h3 className="text-xl font-bold text-black font-jakarta">Designers</h3>
+              </div>
+              <p className="text-[#536772] font-jakarta">
+                Expensive, $50-200 per design, long turnaround times, and multiple revision cycles
+              </p>
+            </div>
+            
+            <div className="bg-white p-6 rounded-2xl shadow-one border-2 border-red-500">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-red-500 text-xl">✕</span>
+                <h3 className="text-xl font-bold text-black font-jakarta">Canva Pro</h3>
+              </div>
+              <p className="text-[#536772] font-jakarta">
+                $14.99/month + 1-3 hours finding templates + 1 hour editing. Time-consuming and limited options
+              </p>
+            </div>
+            
+            <div className="bg-white p-6 rounded-2xl shadow-one border-2 border-green-500">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-green-500 text-xl">✓</span>
+                <h3 className="text-xl font-bold text-black font-jakarta">Adworthy</h3>
+              </div>
+              <p className="text-[#536772] font-jakarta">
+                Save time with instant access to 100+ proven ad styles from Pinterest, Facebook for a simple monthly fee
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-16 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-black mb-12 text-center font-jakarta">
+            Features
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-white p-6 rounded-2xl shadow-one">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-green-500 text-xl">✓</span>
+                <h3 className="text-xl font-bold text-black font-jakarta">Style Matching</h3>
+              </div>
+              <p className="text-[#536772] font-jakarta">
+                Paste any Pinterest URL to get the style of any ad. Perfect for matching your competitors' best-performing ads
+              </p>
+            </div>
+            
+            <div className="bg-white p-6 rounded-2xl shadow-one">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-blue-500 text-xl">⚡</span>
+                <h3 className="text-xl font-bold text-black font-jakarta">A/B Testing</h3>
+              </div>
+              <p className="text-[#536772] font-jakarta">
+                Test different ad styles against each other to find what works best for your audience
+              </p>
+            </div>
+            
+            <div className="bg-white p-6 rounded-2xl shadow-one">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-blue-500 text-xl">⚡</span>
+                <h3 className="text-xl font-bold text-black font-jakarta">Facebook Ads API</h3>
+              </div>
+              <p className="text-[#536772] font-jakarta">
+                Direct integration with Facebook Ads API for seamless campaign management
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="py-16 px-6 bg-gray-50">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-black mb-12 text-center font-jakarta">
+            Simple, transparent pricing
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Starter Plan */}
+            <div className="relative rounded-2xl p-8 border-2 border-gray-300 bg-white">
+              <h2 className="text-2xl font-bold text-black font-jakarta">Starter</h2>
+              <div className="mt-4">
+                <span className="text-4xl font-bold text-black">$19</span>
+                <span className="text-[#545454]">/month</span>
+              </div>
+              <p className="text-[#545454] mt-2">100 credits/month</p>
+              <div className="h-px bg-gray-300 my-6"></div>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
+                  <span className="text-[#545454]">1 credit = 1 ad generation</span>
                 </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-black mb-2 font-jakarta">{item.title}</h3>
-                  <p className="text-[#536772] font-jakarta">{item.description}</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
+                  <span className="text-[#545454]">Style matching from Pinterest</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
+                  <span className="text-[#545454]">Basic templates</span>
                 </div>
               </div>
-            ))}
-          </MasonryGrid>
+              <button className="mt-8 w-full py-3 px-6 rounded-xl bg-black text-white hover:bg-black/90 transition-colors font-jakarta">
+                Get Started
+              </button>
+            </div>
+
+            {/* Pro Plan */}
+            <div className="relative rounded-2xl p-8 border-2 border-blue-500 bg-white">
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-1 rounded-full text-sm">
+                Most Popular
+              </div>
+              <h2 className="text-2xl font-bold text-black font-jakarta">Pro</h2>
+              <div className="mt-4">
+                <span className="text-4xl font-bold text-black">$49</span>
+                <span className="text-[#545454]">/month</span>
+              </div>
+              <p className="text-[#545454] mt-2">500 credits/month</p>
+              <div className="h-px bg-gray-300 my-6"></div>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
+                  <span className="text-[#545454]">1 credit = 1 ad generation</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
+                  <span className="text-[#545454]">Style matching from Pinterest</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
+                  <span className="text-[#545454]">All templates</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
+                  <span className="text-[#545454]">A/B testing (coming soon)</span>
+                </div>
+              </div>
+              <button className="mt-8 w-full py-3 px-6 rounded-xl bg-blue-500 text-white hover:bg-blue-600 transition-colors font-jakarta">
+                Get Started
+              </button>
+            </div>
+
+            {/* Enterprise Plan */}
+            <div className="relative rounded-2xl p-8 border-2 border-gray-300 bg-white">
+              <h2 className="text-2xl font-bold text-black font-jakarta">Enterprise</h2>
+              <div className="mt-4">
+                <span className="text-4xl font-bold text-black">$99</span>
+                <span className="text-[#545454]">/month</span>
+              </div>
+              <p className="text-[#545454] mt-2">1500 credits/month</p>
+              <div className="h-px bg-gray-300 my-6"></div>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
+                  <span className="text-[#545454]">1 credit = 1 ad generation</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
+                  <span className="text-[#545454]">Style matching from Pinterest</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
+                  <span className="text-[#545454]">All templates</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
+                  <span className="text-[#545454]">A/B testing (coming soon)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
+                  <span className="text-[#545454]">Facebook Ads API (coming soon)</span>
+                </div>
+              </div>
+              <button className="mt-8 w-full py-3 px-6 rounded-xl bg-black text-white hover:bg-black/90 transition-colors font-jakarta">
+                Get Started
+              </button>
+            </div>
+          </div>
         </div>
       </section>
     </div>
