@@ -154,11 +154,6 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
       setAnalysisResult(responseText);
     } catch (error) {
       console.error('Error analyzing image:', error);
-      toast({
-        title: "Error analyzing image",
-        description: error instanceof Error ? error.message : "Failed to analyze the image. Please try again.",
-        variant: "destructive",
-      });
     } finally {
       setIsAnalyzing(false);
     }

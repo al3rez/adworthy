@@ -1,7 +1,7 @@
 
 import { FC } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, LogOut, Coins, Palette } from 'lucide-react';
+import { Home, LogOut, Coins, Image } from 'lucide-react';
 import { useAuth } from '@/components/AuthProvider';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
@@ -39,8 +39,8 @@ const Sidebar: FC = () => {
             className={`p-3 cursor-pointer font-extrabold w-64 flex items-center gap-3 rounded-xl ${location.pathname === '/creations' ? 'shadow-one bg-black text-white' : 'hover:bg-gray-50'}`}
             onClick={() => navigate('/creations')}
           >
-            <Palette size={20} />
-            <p>My Creations</p>
+            <Image size={20} />
+            <p>Generated Ads</p>
           </div>
         </div>
       </div>
@@ -59,23 +59,6 @@ const Sidebar: FC = () => {
             <span className="text-sm font-medium text-black">{credits.used}/{credits.total}</span>
           </div>
           <Progress value={credits.percentage} className="h-2" />
-
-          {currentlyGenerating && (
-            <div className="mt-3 pt-3 border-t border-gray-100">
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-xs font-medium text-gray-500">Generating Ad...</span>
-                <span className="text-xs font-medium text-gray-500">
-                  {currentlyGenerating.status === 'generating' ? 'In Progress' : 
-                   currentlyGenerating.status === 'completed' ? 'Completed' : 'Failed'}
-                </span>
-              </div>
-              <Progress 
-                value={currentlyGenerating.status === 'generating' ? 70 : 
-                      currentlyGenerating.status === 'completed' ? 100 : 30} 
-                className="h-1.5"
-              />
-            </div>
-          )}
         </div>
       </div>
 

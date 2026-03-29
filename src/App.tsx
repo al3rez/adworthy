@@ -1,21 +1,54 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect } from "react";
-import { AuthProvider } from "@/components/AuthProvider";
+import { AuthProvider, useAuth } from "@/components/AuthProvider";
 import { CreditsProvider } from "@/contexts/CreditsContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Landing from "./pages/Landing";
-import Index from "./pages/Index";
 import Analyze from "./pages/Analyze";
-import Creations from "./pages/Creations";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import Dashboard from "./pages/Dashboard";
+import Creatives from "./pages/Creatives";
 
 const queryClient = new QueryClient();
+
+const AppRoutes = () => {
+  const { user } = useAuth();
+
+  return (
+    <Routes>
+      <Route path="/" element={
+        user ? <Navigate to="/dashboard" replace /> : <Landing />
+      } />
+      <Route path="/dashboard" element={
+        <ProtectedRoute>
+          <Dashboard />
+        </ProtectedRoute>
+      } />
+      <Route path="/analyze" element={
+        <ProtectedRoute>
+          <Analyze />
+        </ProtectedRoute>
+      } />
+      <Route path="/creations" element={
+        <ProtectedRoute>
+          <Creatives />
+        </ProtectedRoute>
+      } />
+      <Route path="/collections/:id" element={
+        <ProtectedRoute>
+          <Dashboard />
+        </ProtectedRoute>
+      } />
+      <Route path="/auth" element={<Auth />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
 
 const App = () => {
   useEffect(() => {
@@ -37,31 +70,7 @@ const App = () => {
             <Toaster />
             <Sonner />
             <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Landing />} />
-                <Route path="/dashboard" element={
-                  <ProtectedRoute>
-                    <Index />
-                  </ProtectedRoute>
-                } />
-                <Route path="/analyze" element={
-                  <ProtectedRoute>
-                    <Analyze />
-                  </ProtectedRoute>
-                } />
-                <Route path="/creations" element={
-                  <ProtectedRoute>
-                    <Creations />
-                  </ProtectedRoute>
-                } />
-                <Route path="/collections/:id" element={
-                  <ProtectedRoute>
-                    <Index />
-                  </ProtectedRoute>
-                } />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <AppRoutes />
             </BrowserRouter>
           </TooltipProvider>
         </CreditsProvider>
