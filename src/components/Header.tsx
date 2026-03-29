@@ -12,7 +12,7 @@ const Header: FC = () => {
         <div className="flex items-center">
           <div className="mr-6 flex items-center">
             <img 
-              src="/lovable-uploads/0e65446c-c906-4ab5-9982-6f1414453c98.png" 
+              src="adworthy-v2.svg" 
               alt="Adworthy Logo" 
               className="h-8"
             />

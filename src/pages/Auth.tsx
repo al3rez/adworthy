@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -112,16 +111,12 @@ const Auth = () => {
       <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
         <div className="mb-6 flex justify-center">
           <img 
-            src="/lovable-uploads/0e65446c-c906-4ab5-9982-6f1414453c98.png" 
+            src="adworthy-v2.svg" 
             alt="Adworthy Logo" 
             className="h-10"
           />
         </div>
-        
-        <h1 className="mb-6 text-center text-2xl font-bold text-gray-800">
-          {isSignUp ? 'Create an Account' : 'Sign in to Adworthy'}
-        </h1>
-        
+       
         <form onSubmit={handleEmailSignIn} className="space-y-4">
           {isSignUp && (
             <div className="space-y-2">
@@ -189,9 +184,9 @@ const Auth = () => {
         </form>
         
         <div className="my-6 flex items-center gap-4">
-          <Separator className="flex-grow" />
-          <span className="text-sm text-gray-500">OR</span>
-          <Separator className="flex-grow" />
+          <Separator className="flex-1" />
+          <span className="text-sm text-gray-500 shrink-0">OR</span>
+          <Separator className="flex-1" />
         </div>
         
         <Button 
@@ -228,7 +223,7 @@ const Auth = () => {
                 onClick={() => setIsSignUp(true)}
                 className="text-blue-600 hover:underline"
               >
-                Create one
+                Sign up
               </button>
             </p>
           )}
