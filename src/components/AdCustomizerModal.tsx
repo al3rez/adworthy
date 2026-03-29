@@ -1,11 +1,12 @@
-
 import { FC, useState, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { toast } from '@/components/ui/use-toast';
-import { Upload, Download, X, Image as ImageIcon, Loader2, ChevronDown } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
+import { Download, X, Image as ImageIcon, Loader2, ChevronDown } from 'lucide-react';
+import { useCredits } from '@/contexts/CreditsContext';
 
 interface AdCustomizerModalProps {
   open: boolean;
@@ -36,6 +37,9 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
   onOpenChange,
   selectedTemplate
 }) => {
+  const navigate = useNavigate();
+  const { useCredits, addGeneratedAd, updateGeneratedAdStatus } = useCredits();
+  
   const [prompt, setPrompt] = useState(promptTemplates[0].text);
   const [selectedPromptId, setSelectedPromptId] = useState('custom');
   const [productImage, setProductImage] = useState<File | null>(null);
@@ -58,7 +62,6 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
     const reader = new FileReader();
     reader.onloadend = () => {
       setProductImagePreview(reader.result as string);
-      // No longer automatically analyze the image when uploaded
     };
     reader.readAsDataURL(file);
   };
@@ -115,17 +118,14 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
 
       let imageData;
       if (file) {
-        // Convert file to base64
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = async () => {
           const base64Data = reader.result as string;
-          // Remove the data URL prefix
           const base64Image = base64Data.split(',')[1];
           imageData = { imageBase64: base64Image };
         };
       } else {
-        // Use template image URL
         imageData = { templateImageUrl: selectedTemplate.imageUrl };
       }
 
@@ -165,26 +165,41 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
 
   const handleGenerateAd = async () => {
     try {
+      if (!useCredits(1)) {
+        return;
+      }
+      
       setIsAnalyzing(true);
-      // Call analyzeImage with null to use template image URL
-      await analyzeImage(null);
+      
+      const generatedAdId = addGeneratedAd({
+        title: selectedTemplate.title || 'Custom Ad',
+        imageUrl: selectedTemplate.imageUrl,
+        prompt: prompt,
+        originalTemplateId: selectedTemplate.id
+      });
       
       toast({
         title: "Ad generation started",
         description: "Your customized ad will be ready shortly.",
       });
+
+      await analyzeImage(null);
       
-      // Close the modal
       setTimeout(() => {
-        onOpenChange(false);
+        updateGeneratedAdStatus(generatedAdId, 'completed');
         
-        // Reset form
-        setPrompt(promptTemplates[0].text);
-        setSelectedPromptId('custom');
-        setProductImage(null);
-        setProductImagePreview('');
-        setAnalysisResult('');
-      }, 1000);
+        setTimeout(() => {
+          onOpenChange(false);
+          
+          setPrompt(promptTemplates[0].text);
+          setSelectedPromptId('custom');
+          setProductImage(null);
+          setProductImagePreview('');
+          setAnalysisResult('');
+          
+          navigate('/creations');
+        }, 1000);
+      }, 2000);
     } catch (error) {
       console.error('Error generating ad:', error);
       toast({
@@ -326,7 +341,6 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
                 alt={selectedTemplate.title}
                 className="w-full h-full object-cover"
               />
-              {/* Removed the product image overlay on the ad template */}
             </div>
           </div>
         </div>

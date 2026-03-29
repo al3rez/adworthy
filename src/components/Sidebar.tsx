@@ -1,21 +1,17 @@
+
 import { FC } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, LogOut, Coins } from 'lucide-react';
+import { Home, LogOut, Coins, Palette } from 'lucide-react';
 import { useAuth } from '@/components/AuthProvider';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
+import { useCredits } from '@/contexts/CreditsContext';
 
 const Sidebar: FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, signOut } = useAuth();
-  
-  // TODO: Replace with actual credit data from API
-  const credits = {
-    used: 25,
-    total: 100,
-    percentage: 25
-  };
+  const { credits, currentlyGenerating } = useCredits();
   
   return (
     <div className="bg-white border-r-[1px] border-r-lightgrey overflow-y-auto fixed top-0 left-0 h-screen w-80 flex flex-col items-center pt-9 text-[#536772] font-jakarta">
@@ -38,24 +34,49 @@ const Sidebar: FC = () => {
             <Home size={20} />
             <p>Explore</p>
           </div>
+          
+          <div 
+            className={`p-3 cursor-pointer font-extrabold w-64 flex items-center gap-3 rounded-xl ${location.pathname === '/creations' ? 'shadow-one bg-black text-white' : 'hover:bg-gray-50'}`}
+            onClick={() => navigate('/creations')}
+          >
+            <Palette size={20} />
+            <p>My Creations</p>
+          </div>
         </div>
       </div>
       
       {/* Spacer to push the user profile to the bottom */}
       <div className="flex-grow"></div>
       
-        <div className="w-full px-7 py-6 mt-auto">
-          {/* Credit Widget */}
-          <div className="bg-white rounded-xl p-4 border-[1px] border-lightgrey">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <Coins size={16} className="text-yellow-500" />
-                <span className="text-sm font-medium text-black">Credits</span>
-              </div>
-              <span className="text-sm font-medium text-black">{credits.used}/{credits.total}</span>
+      <div className="w-full px-7 py-6 mt-auto">
+        {/* Credit Widget */}
+        <div className="bg-white rounded-xl p-4 border-[1px] border-lightgrey">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <Coins size={16} className="text-yellow-500" />
+              <span className="text-sm font-medium text-black">Credits</span>
             </div>
-            <Progress value={credits.percentage} className="h-2" />
+            <span className="text-sm font-medium text-black">{credits.used}/{credits.total}</span>
           </div>
+          <Progress value={credits.percentage} className="h-2" />
+
+          {currentlyGenerating && (
+            <div className="mt-3 pt-3 border-t border-gray-100">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-medium text-gray-500">Generating Ad...</span>
+                <span className="text-xs font-medium text-gray-500">
+                  {currentlyGenerating.status === 'generating' ? 'In Progress' : 
+                   currentlyGenerating.status === 'completed' ? 'Completed' : 'Failed'}
+                </span>
+              </div>
+              <Progress 
+                value={currentlyGenerating.status === 'generating' ? 70 : 
+                      currentlyGenerating.status === 'completed' ? 100 : 30} 
+                className="h-1.5"
+              />
+            </div>
+          )}
+        </div>
       </div>
 
       {user && (

@@ -6,10 +6,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import { AuthProvider } from "@/components/AuthProvider";
+import { CreditsProvider } from "@/contexts/CreditsContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Landing from "./pages/Landing";
 import Index from "./pages/Index";
 import Analyze from "./pages/Analyze";
+import Creations from "./pages/Creations";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -30,32 +32,39 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/dashboard" element={
-                <ProtectedRoute>
-                  <Index />
-                </ProtectedRoute>
-              } />
-              <Route path="/analyze" element={
-                <ProtectedRoute>
-                  <Analyze />
-                </ProtectedRoute>
-              } />
-              <Route path="/collections/:id" element={
-                <ProtectedRoute>
-                  <Index />
-                </ProtectedRoute>
-              } />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
+        <CreditsProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Landing />} />
+                <Route path="/dashboard" element={
+                  <ProtectedRoute>
+                    <Index />
+                  </ProtectedRoute>
+                } />
+                <Route path="/analyze" element={
+                  <ProtectedRoute>
+                    <Analyze />
+                  </ProtectedRoute>
+                } />
+                <Route path="/creations" element={
+                  <ProtectedRoute>
+                    <Creations />
+                  </ProtectedRoute>
+                } />
+                <Route path="/collections/:id" element={
+                  <ProtectedRoute>
+                    <Index />
+                  </ProtectedRoute>
+                } />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </CreditsProvider>
       </AuthProvider>
     </QueryClientProvider>
   );
