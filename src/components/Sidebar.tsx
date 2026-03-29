@@ -10,7 +10,7 @@ const Sidebar: FC = () => {
   const { user, signOut } = useAuth();
   
   return (
-    <div className="bg-gradient-to-bl from-rose-50 to-teal-50 border-r-[1px] border-r-lightgrey overflow-y-auto fixed top-0 left-0 h-screen w-80 flex flex-col items-center pt-9 text-[#536772] font-jakarta">
+    <div className="bg-white border-r-[1px] border-r-lightgrey overflow-y-auto fixed top-0 left-0 h-screen w-80 flex flex-col items-center pt-9 text-[#536772] font-jakarta">
       <div className="flex flex-col items-center gap-10 mb-10">
         <div className="flex items-center justify-between w-60">
           <div className="flex items-center gap-2">
@@ -24,7 +24,7 @@ const Sidebar: FC = () => {
         
         <div className="flex flex-col items-center gap-4 text-daisygrey">
           <div 
-            className={`p-3 cursor-pointer font-extrabold w-64 flex items-center gap-3 rounded-xl ${location.pathname === '/dashboard' || location.pathname === '/' ? 'shadow-one bg-black text-white' : ''}`}
+            className={`p-3 cursor-pointer font-extrabold w-64 flex items-center gap-3 rounded-xl ${location.pathname === '/dashboard' || location.pathname === '/' ? 'shadow-one bg-black text-white' : 'hover:bg-gray-50'}`}
             onClick={() => navigate('/dashboard')}
           >
             <Home size={20} />
@@ -32,7 +32,7 @@ const Sidebar: FC = () => {
           </div>
           
           <div 
-            className={`p-3 cursor-pointer font-extrabold w-64 flex items-center gap-3 rounded-xl ${location.pathname === '/analyze' ? 'shadow-one bg-black text-white' : ''}`}
+            className={`p-3 cursor-pointer font-extrabold w-64 flex items-center gap-3 rounded-xl ${location.pathname === '/analyze' ? 'shadow-one bg-black text-white' : 'hover:bg-gray-50'}`}
             onClick={() => navigate('/analyze')}
           >
             <Zap size={20} />
@@ -49,15 +49,15 @@ const Sidebar: FC = () => {
           <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10">
               <AvatarImage src={user.user_metadata.avatar_url || ''} />
-              <AvatarFallback className="bg-primary text-white">
+              <AvatarFallback className="bg-black text-white">
                 {user.email ? user.email.substring(0, 2).toUpperCase() : 'U'}
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col justify-center">
-              <p className="text-xs w-[11rem] max-w-[11rem] truncate font-bold text-black">
+              <p className="text-sm w-[11rem] max-w-[11rem] truncate font-bold text-black">
                 {user.user_metadata.full_name || user.email}
               </p>
-              <p className="text-[0.65rem] w-[11rem] max-w-[11rem] truncate">
+              <p className="text-xs w-[11rem] max-w-[11rem] truncate text-[#536772]">
                 {user.email}
               </p>
             </div>

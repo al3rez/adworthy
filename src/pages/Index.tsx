@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import AdTemplateCard from '@/components/AdTemplateCard';
 import AdCustomizerModal from '@/components/AdCustomizerModal';
@@ -16,7 +15,7 @@ const transformToTemplateFormat = (templates: AdTemplate[]) => {
     id: template.id,
     title: template.title || 'Ad Template',
     imageUrl: template.imageURL,
-    aspectRatio: 1.2, // Default aspect ratio
+    aspectRatio: 1.2,
     category: template.pinner?.fullName || 'The Farmer\'s Dog'
   }));
 };
@@ -72,24 +71,24 @@ const Index = () => {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-slate-50 flex">
+    <div className="min-h-screen bg-white flex">
       <Sidebar />
       
       <div className="flex-1 pl-80">
-        <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-border py-3 px-6">
-          <div className="max-w-full mx-auto flex items-center justify-between">
+        <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-lightgrey py-4 px-6">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Home size={18} className="text-amber-600" />
-              <h1 className="text-xl font-semibold text-gray-800">Explore</h1>
+              <Home size={20} className="text-black" />
+              <h1 className="text-xl font-bold text-black font-jakarta">Explore</h1>
             </div>
             
             <div className="relative flex items-center">
-              <div className="absolute left-3 text-muted-foreground">
+              <div className="absolute left-3 text-[#536772]">
                 <Search size={16} />
               </div>
               <Input 
-                className="pl-10 w-[250px] h-9 bg-gray-100 border-none rounded-full" 
-                placeholder="Search" 
+                className="pl-10 w-[250px] h-10 bg-gray-50 border-none rounded-xl font-jakarta" 
+                placeholder="Search templates..." 
               />
             </div>
           </div>
@@ -115,8 +114,13 @@ const Index = () => {
                 </MasonryGrid>
               ) : (
                 <div className="flex flex-col items-center justify-center h-[40vh] text-center">
-                  <p className="text-muted-foreground mb-4">No templates found. Try refreshing the page.</p>
-                  <Button onClick={() => fetchTemplates(true)}>Refresh</Button>
+                  <p className="text-[#536772] mb-4 font-jakarta">No templates found. Try refreshing the page.</p>
+                  <Button 
+                    onClick={() => fetchTemplates(true)}
+                    className="bg-black hover:bg-black/90 text-white px-6 py-2 rounded-xl font-jakarta"
+                  >
+                    Refresh
+                  </Button>
                 </div>
               )}
               
@@ -126,7 +130,7 @@ const Index = () => {
                     onClick={handleLoadMore} 
                     disabled={loadingMore}
                     variant="outline"
-                    className="min-w-[180px]"
+                    className="min-w-[180px] bg-white text-black border-black hover:bg-black hover:text-white rounded-xl font-jakarta"
                   >
                     {loadingMore ? <Loader size="sm" /> : "Load More Templates"}
                   </Button>

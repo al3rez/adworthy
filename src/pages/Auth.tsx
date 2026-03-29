@@ -24,7 +24,7 @@ const Auth = () => {
       (event, session) => {
         if (session?.user) {
           setUser(session.user);
-          navigate('/');
+          navigate('/dashboard');
         }
       }
     );
@@ -33,7 +33,7 @@ const Auth = () => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         setUser(session.user);
-        navigate('/');
+        navigate('/dashboard');
       }
     });
 
