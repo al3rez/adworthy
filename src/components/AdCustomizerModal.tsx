@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/components/ui/use-toast';
+import { Upload, Download, X } from 'lucide-react';
 
 interface AdCustomizerModalProps {
   open: boolean;
@@ -95,7 +96,7 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
                   className="shadow-one"
                 />
                 <Button size="icon" variant="outline" className="shadow-one">
-                  📤
+                  <Upload size={16} />
                 </Button>
               </div>
             </div>
@@ -117,7 +118,7 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
             <div className="p-3 flex justify-between items-center">
               <span className="text-sm font-medium">{selectedTemplate.title}</span>
               <Button size="sm" variant="ghost">
-                ❌
+                <X size={14} className="mr-1" />
                 Reset
               </Button>
             </div>
@@ -129,7 +130,7 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
             Cancel
           </Button>
           <Button onClick={handleGenerateAd} className="gap-1.5 bg-black text-white shadow-one">
-            📥
+            <Download size={16} />
             Generate Ad
           </Button>
         </DialogFooter>

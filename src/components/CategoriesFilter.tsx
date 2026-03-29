@@ -1,6 +1,7 @@
 
 import { FC } from 'react';
 import { Button } from '@/components/ui/button';
+import { Search } from 'lucide-react';
 
 interface CategoriesFilterProps {
   categories: string[];
@@ -38,7 +39,7 @@ const CategoriesFilter: FC<CategoriesFilterProps> = ({
         ))}
         
         <Button size="sm" variant="outline" className="text-sm font-medium whitespace-nowrap ml-auto">
-          <span className="mr-1.5">🔍</span>
+          <Search size={14} className="mr-1.5" />
           More Filters
         </Button>
       </div>

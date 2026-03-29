@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import { fetchAdTemplates, AdTemplate } from '@/utils/apiService';
 import MasonryGrid from '@/components/MasonryGrid';
+import { Search, Home } from 'lucide-react';
 
 const transformToTemplateFormat = (templates: AdTemplate[]) => {
   return templates.map(template => ({
@@ -78,13 +79,13 @@ const Index = () => {
         <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-border py-3 px-6">
           <div className="max-w-full mx-auto flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-amber-600">🏠</span>
+              <Home size={18} className="text-amber-600" />
               <h1 className="text-xl font-semibold text-gray-800">Explore</h1>
             </div>
             
             <div className="relative flex items-center">
               <div className="absolute left-3 text-muted-foreground">
-                🔍
+                <Search size={16} />
               </div>
               <Input 
                 className="pl-10 w-[250px] h-9 bg-gray-100 border-none rounded-full" 

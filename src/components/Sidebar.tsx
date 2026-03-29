@@ -2,6 +2,7 @@
 import { FC, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Home, Zap, Settings, LogOut } from 'lucide-react';
 
 const Sidebar: FC = () => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const Sidebar: FC = () => {
             className={`p-3 cursor-pointer font-extrabold w-64 flex items-center gap-3 rounded-xl ${location.pathname === '/' ? 'shadow-one bg-black text-white' : ''}`}
             onClick={() => navigate('/')}
           >
-            🏠
+            <Home size={20} />
             <p>Explore</p>
           </div>
           
@@ -34,7 +35,7 @@ const Sidebar: FC = () => {
             className={`p-3 cursor-pointer font-extrabold w-64 flex items-center gap-3 rounded-xl ${location.pathname === '/analyze' ? 'shadow-one bg-black text-white' : ''}`}
             onClick={() => navigate('/analyze')}
           >
-            ⚡
+            <Zap size={20} />
             <p>Analyze</p>
           </div>
         </div>
@@ -49,7 +50,7 @@ const Sidebar: FC = () => {
       >
         <div className="flex gap-2">
           <div className="rounded-lg shadow-one h-10 w-10 flex items-center justify-center bg-cloud text-2xl">
-            ⚙️
+            <Settings size={20} />
           </div>
           <div className="flex flex-col justify-center">
             <p className="text-xs w-[11rem] max-w-[11rem] truncate font-bold text-black">
@@ -70,12 +71,12 @@ const Sidebar: FC = () => {
         >
           <div className="flex flex-col mb-3 bg-ice border-2 border-lightgrey rounded-md w-full">
             <div className="hover:bg-lightgrey p-3 rounded-md flex items-center gap-1 cursor-pointer text-daisygrey hover:text-black">
-              ⚙️
+              <Settings size={16} />
               <p className="font-semibold">Edit Profile</p>
             </div>
             <div className="border-t border-lightgrey my-1"></div>
             <div className="hover:bg-lightgrey p-3 rounded-md flex items-center gap-1 cursor-pointer text-daisygrey hover:text-black">
-              🚪
+              <LogOut size={16} />
               <p className="font-semibold">Logout</p>
             </div>
           </div>

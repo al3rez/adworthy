@@ -1,6 +1,7 @@
 
 import { FC, useState } from 'react';
 import { cn } from '@/lib/utils';
+import { Share } from 'lucide-react';
 
 interface AdTemplateCardProps {
   template: {
@@ -38,7 +39,7 @@ const AdTemplateCard: FC<AdTemplateCardProps> = ({ template, onClick }) => {
       {/* Action buttons */}
       <div className="absolute right-2 bottom-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
         <button className="w-6 h-6 rounded-full bg-white shadow flex items-center justify-center">
-          <span className="text-gray-600 text-xs">📤</span>
+          <Share size={12} className="text-gray-600" />
         </button>
       </div>
 

@@ -3,6 +3,7 @@ import { FC } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Search, Plus, Bell } from 'lucide-react';
 
 const Header: FC = () => {
   return (
@@ -19,7 +20,7 @@ const Header: FC = () => {
           
           <div className="relative hidden md:flex items-center">
             <div className="absolute left-3 text-muted-foreground">
-              🔍
+              <Search size={16} />
             </div>
             <Input 
               className="pl-10 w-[280px] h-9 bg-secondary/80 border-none" 
@@ -30,11 +31,11 @@ const Header: FC = () => {
         
         <div className="flex items-center gap-2">
           <Button size="sm" variant="outline" className="text-sm font-medium">
-            <span className="mr-1">➕</span>
+            <Plus size={16} className="mr-1" />
             Create New
           </Button>
           <Button size="icon" variant="ghost" className="text-muted-foreground">
-            🔔
+            <Bell size={16} />
           </Button>
           <Avatar className="h-8 w-8">
             <AvatarFallback className="bg-primary/10 text-primary font-medium">
