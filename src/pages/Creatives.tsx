@@ -44,6 +44,13 @@ const Creatives: React.FC = () => {
     ) {
       return "/product_result_2.png";
     }
+     else if (
+      imageUrl ===
+      "https://i.pinimg.com/originals/45/52/ed/4552edfcc623955caad90c187409cdb5.jpg"
+    ) {
+      return "/product_result_3.png";
+    }
+
     return imageUrl;
   };
 
