@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/components/ui/use-toast';
-import { Upload, Download, X, Image as ImageIcon } from 'lucide-react';
+import { Upload, Download, X, Image as ImageIcon, Loader2 } from 'lucide-react';
 
 interface AdCustomizerModalProps {
   open: boolean;
@@ -20,6 +20,8 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
   const [prompt, setPrompt] = useState('Repurpose this ad style for my brand, focusing on...');
   const [productImage, setProductImage] = useState<File | null>(null);
   const [productImagePreview, setProductImagePreview] = useState<string>('');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<string>('');
   
   const handleProductImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -28,36 +30,99 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
       const reader = new FileReader();
       reader.onloadend = () => {
         setProductImagePreview(reader.result as string);
+        // Automatically analyze the image when uploaded
+        analyzeImage(file);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleGenerateAd = () => {
-    if (!productImage) {
+  const analyzeImage = async (file: File | null) => {
+    try {
+      setIsAnalyzing(true);
+      setAnalysisResult('');
+
+      let imageData;
+      if (file) {
+        // Convert file to base64
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = async () => {
+          const base64Data = reader.result as string;
+          // Remove the data URL prefix
+          const base64Image = base64Data.split(',')[1];
+          imageData = { imageBase64: base64Image };
+        };
+      } else {
+        // Use template image URL
+        imageData = { templateImageUrl: selectedTemplate.imageUrl };
+      }
+
+      console.log('Sending request with data:', { ...imageData, prompt });
+      
+      const response = await fetch('http://localhost:64693/api/analyze-image', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...imageData,
+          prompt: prompt
+        }),
+      });
+
+      console.log('Response status:', response.status);
+      const responseText = await response.text();
+      console.log('Response text:', responseText);
+
+      if (!response.ok) {
+        throw new Error(`Failed to analyze image: ${responseText}`);
+      }
+
+      setAnalysisResult(responseText);
+    } catch (error) {
+      console.error('Error analyzing image:', error);
       toast({
-        title: "Missing product image",
-        description: "Please upload your product image before generating the ad.",
+        title: "Error analyzing image",
+        description: error instanceof Error ? error.message : "Failed to analyze the image. Please try again.",
         variant: "destructive",
       });
-      return;
+    } finally {
+      setIsAnalyzing(false);
     }
+  };
 
-    // In a real app, this would call an API to generate the ad
-    toast({
-      title: "Ad generation started",
-      description: "Your customized ad will be ready shortly.",
-    });
-    
-    // Close the modal
-    setTimeout(() => {
-      onOpenChange(false);
+  const handleGenerateAd = async () => {
+    try {
+      setIsAnalyzing(true);
+      // Call analyzeImage with null to use template image URL
+      await analyzeImage(null);
       
-      // Reset form
-      setPrompt('Repurpose this ad style for my brand, focusing on...');
-      setProductImage(null);
-      setProductImagePreview('');
-    }, 1000);
+      toast({
+        title: "Ad generation started",
+        description: "Your customized ad will be ready shortly.",
+      });
+      
+      // Close the modal
+      setTimeout(() => {
+        onOpenChange(false);
+        
+        // Reset form
+        setPrompt('Repurpose this ad style for my brand, focusing on...');
+        setProductImage(null);
+        setProductImagePreview('');
+        setAnalysisResult('');
+      }, 1000);
+    } catch (error) {
+      console.error('Error generating ad:', error);
+      toast({
+        title: "Error generating ad",
+        description: error instanceof Error ? error.message : "Failed to generate the ad. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
   
   if (!selectedTemplate) return null;
@@ -94,6 +159,7 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
                         onClick={() => {
                           setProductImage(null);
                           setProductImagePreview('');
+                          setAnalysisResult('');
                         }}
                       >
                         <X size={16} />
@@ -135,6 +201,18 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
                 className="shadow-one"
                 placeholder="Describe how you'd like to adapt this style for your brand..."
               />
+              {isAnalyzing && (
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Analyzing image...
+                </div>
+              )}
+              {analysisResult && (
+                <div className="mt-2 p-3 bg-gray-50 rounded-lg text-sm text-gray-700">
+                  <p className="font-medium mb-1">Analysis Result:</p>
+                  <p>{analysisResult}</p>
+                </div>
+              )}
             </div>
           </div>
           
@@ -168,7 +246,6 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
           <Button 
             onClick={handleGenerateAd} 
             className="gap-1.5 bg-black text-white shadow-one"
-            disabled={!productImage}
           >
             <Download size={16} />
             3. Generate Inspired Ad
