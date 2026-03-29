@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/components/ui/use-toast';
-import { Upload, Download, X, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Upload, Download, X, Image as ImageIcon, Loader2, ChevronDown } from 'lucide-react';
 
 interface AdCustomizerModalProps {
   open: boolean;
@@ -13,17 +13,37 @@ interface AdCustomizerModalProps {
   selectedTemplate: any | null;
 }
 
+const promptTemplates = [
+  {
+    id: 'custom',
+    title: 'Custom Prompt',
+    text: 'Repurpose this ad style for my brand, focusing on...',
+  },
+  {
+    id: 'recreate',
+    title: 'Product Replacement',
+    text: 'Recreate this ad image by replacing the [original item] with [my product], and update the text to match the features and benefits of [my product]',
+  },
+  {
+    id: 'style',
+    title: 'Style Transfer',
+    text: 'Transfer the visual style, layout and composition of this ad to showcase my product, while keeping the color scheme and aesthetic consistent.',
+  }
+];
+
 const AdCustomizerModal: FC<AdCustomizerModalProps> = ({ 
   open, 
   onOpenChange,
   selectedTemplate
 }) => {
-  const [prompt, setPrompt] = useState('Repurpose this ad style for my brand, focusing on...');
+  const [prompt, setPrompt] = useState(promptTemplates[0].text);
+  const [selectedPromptId, setSelectedPromptId] = useState('custom');
   const [productImage, setProductImage] = useState<File | null>(null);
   const [productImagePreview, setProductImagePreview] = useState<string>('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<string>('');
   const [isDragging, setIsDragging] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const handleProductImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,6 +97,15 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
 
   const handleClickUpload = () => {
     fileInputRef.current?.click();
+  };
+
+  const selectPromptTemplate = (templateId: string) => {
+    const template = promptTemplates.find(t => t.id === templateId);
+    if (template) {
+      setPrompt(template.text);
+      setSelectedPromptId(templateId);
+    }
+    setShowTemplates(false);
   };
 
   const analyzeImage = async (file: File | null) => {
@@ -150,7 +179,8 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
         onOpenChange(false);
         
         // Reset form
-        setPrompt('Repurpose this ad style for my brand, focusing on...');
+        setPrompt(promptTemplates[0].text);
+        setSelectedPromptId('custom');
         setProductImage(null);
         setProductImagePreview('');
         setAnalysisResult('');
@@ -241,7 +271,31 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="prompt">2. Customize Your Vision</Label>
+              <Label htmlFor="prompt-template">2. Choose Your Prompt Style</Label>
+              <div className="relative">
+                <div 
+                  className="flex items-center justify-between p-3 border rounded-md cursor-pointer hover:border-primary"
+                  onClick={() => setShowTemplates(!showTemplates)}
+                >
+                  <span>{promptTemplates.find(t => t.id === selectedPromptId)?.title || 'Custom Prompt'}</span>
+                  <ChevronDown size={16} className={`transition-transform ${showTemplates ? 'rotate-180' : ''}`} />
+                </div>
+                
+                {showTemplates && (
+                  <div className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg">
+                    {promptTemplates.map(template => (
+                      <div 
+                        key={template.id}
+                        className={`p-3 hover:bg-gray-100 cursor-pointer ${selectedPromptId === template.id ? 'bg-gray-50' : ''}`}
+                        onClick={() => selectPromptTemplate(template.id)}
+                      >
+                        {template.title}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
               <Textarea
                 id="prompt"
                 value={prompt}
