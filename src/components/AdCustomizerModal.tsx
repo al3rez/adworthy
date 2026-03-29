@@ -1,3 +1,4 @@
+
 import { FC, useState, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -38,7 +39,7 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
   selectedTemplate
 }) => {
   const navigate = useNavigate();
-  const { useCredits, addGeneratedAd, updateGeneratedAdStatus } = useCredits();
+  const { useCredits: spendCredits, addGeneratedAd, updateGeneratedAdStatus } = useCredits();
   
   const [prompt, setPrompt] = useState(promptTemplates[0].text);
   const [selectedPromptId, setSelectedPromptId] = useState('custom');
@@ -165,7 +166,7 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
 
   const handleGenerateAd = async () => {
     try {
-      if (!useCredits(1)) {
+      if (!spendCredits(1)) {
         return;
       }
       
