@@ -23,7 +23,11 @@ const Creatives: React.FC = () => {
         !generatedAdsHistory[ad.id] &&
         !loadingStates[ad.id]
       ) {
-        setGeneratedAdsHistory(prev => ({ ...prev, [ad.id]: true }));
+        setLoadingStates(prev => ({ ...prev, [ad.id]: true }));
+        setTimeout(() => {
+          setLoadingStates(prev => ({ ...prev, [ad.id]: false }));
+          setGeneratedAdsHistory(prev => ({ ...prev, [ad.id]: true }));
+        }, 30000); // 30 seconds loading
       }
     });
   }, [generatedAds]);
