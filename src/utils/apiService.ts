@@ -21,7 +21,11 @@ export interface AdTemplate {
 
 export async function fetchAdTemplates() {
   try {
-    const response = await fetch('https://pinrest-api.netlify.app/api/hello');
+    const response = await fetch('http://localhost:8888/api/hello', {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     
     if (!response.ok) {
       throw new Error(`API error: ${response.status}`);
