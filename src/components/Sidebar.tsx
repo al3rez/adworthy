@@ -35,7 +35,10 @@ const Sidebar: FC = () => {
         </div>
       </div>
       
-      <details className="dropdown dropdown-top dropdown-end">
+      {/* Spacer to push the user profile to the bottom */}
+      <div className="flex-grow"></div>
+      
+      <details className="dropdown dropdown-top dropdown-end mt-auto">
         <summary>
           <div className="w-full cursor-pointer px-7 flex items-center justify-between gap-3 py-6 border-t-[1px] border-lightgrey">
             <div className="flex gap-2">

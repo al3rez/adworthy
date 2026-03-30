@@ -45,7 +45,7 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
   
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-3xl">
+      <DialogContent className="sm:max-w-3xl bg-gradient-to-bl from-rose-50 to-teal-50">
         <DialogHeader>
           <DialogTitle className="text-2xl font-semibold">Customize Ad Template</DialogTitle>
           <DialogDescription>
@@ -62,6 +62,7 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
                 placeholder="Enter your headline"
                 value={headline}
                 onChange={(e) => setHeadline(e.target.value)}
+                className="shadow-one"
               />
             </div>
             
@@ -73,6 +74,7 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
                 rows={4}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                className="shadow-one"
               />
             </div>
             
@@ -84,15 +86,16 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
                   placeholder="Upload or paste image URL"
                   value={logoUrl}
                   onChange={(e) => setLogoUrl(e.target.value)}
+                  className="shadow-one"
                 />
-                <Button size="icon" variant="outline">
+                <Button size="icon" variant="outline" className="shadow-one">
                   <Upload size={16} />
                 </Button>
               </div>
             </div>
           </div>
           
-          <div className="rounded-lg border border-border overflow-hidden bg-muted/30">
+          <div className="rounded-lg border border-border overflow-hidden bg-cloud shadow-one">
             <div className="aspect-[4/5] relative">
               <img 
                 src={selectedTemplate.imageUrl}
@@ -116,10 +119,10 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
         </div>
         
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" onClick={() => onOpenChange(false)} className="shadow-one">
             Cancel
           </Button>
-          <Button onClick={handleGenerateAd} className="gap-1.5">
+          <Button onClick={handleGenerateAd} className="gap-1.5 bg-black text-white shadow-one">
             <Download size={16} />
             Generate Ad
           </Button>

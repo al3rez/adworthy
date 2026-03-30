@@ -72,11 +72,11 @@ const Index = () => {
   };
   
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-screen bg-gradient-to-br from-white to-slate-50 flex">
       <Sidebar />
       
       <div className="flex-1 pl-80">
-        <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border py-3 px-6">
+        <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-border py-3 px-6">
           <div className="max-w-full mx-auto flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-amber-600">🏠</span>
