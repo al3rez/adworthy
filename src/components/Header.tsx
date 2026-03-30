@@ -3,15 +3,20 @@ import { FC } from 'react';
 import { Search, Plus, BellDot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 const Header: FC = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border py-3 px-4 md:px-6">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center">
-          <h1 className="text-xl font-semibold font-jakarta bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 mr-6">
-            SwipeFarm
-          </h1>
+          <div className="mr-6 flex items-center">
+            <img 
+              src="/lovable-uploads/0e65446c-c906-4ab5-9982-6f1414453c98.png" 
+              alt="Adworthy Logo" 
+              className="h-8"
+            />
+          </div>
           
           <div className="relative hidden md:flex items-center">
             <div className="absolute left-3 text-muted-foreground">
@@ -32,9 +37,11 @@ const Header: FC = () => {
           <Button size="icon" variant="ghost" className="text-muted-foreground">
             <BellDot size={20} />
           </Button>
-          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium">
-            A
-          </div>
+          <Avatar className="h-8 w-8">
+            <AvatarFallback className="bg-primary/10 text-primary font-medium">
+              A
+            </AvatarFallback>
+          </Avatar>
         </div>
       </div>
     </header>

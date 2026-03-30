@@ -13,9 +13,13 @@ const Sidebar: FC = () => {
     <div className="bg-gradient-to-bl from-rose-50 to-teal-50 border-r-[1px] border-r-lightgrey overflow-y-auto fixed top-0 left-0 h-screen w-80 flex flex-col items-center pt-9 text-[#536772] font-jakarta">
       <div className="flex flex-col items-center gap-10 mb-10">
         <div className="flex items-center justify-between w-60">
-          <span className="font-semibold text-lg font-jakarta bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
-            SwipeFarm
-          </span>
+          <div className="flex items-center gap-2">
+            <img 
+              src="/lovable-uploads/0e65446c-c906-4ab5-9982-6f1414453c98.png" 
+              alt="Adworthy Logo" 
+              className="h-8"
+            />
+          </div>
         </div>
         
         <div className="flex flex-col items-center gap-4 text-daisygrey">

@@ -47,7 +47,14 @@ const AdCustomizerModal: FC<AdCustomizerModalProps> = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-3xl bg-gradient-to-bl from-rose-50 to-teal-50">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-semibold">Customize Ad Template</DialogTitle>
+          <div className="flex items-center gap-2 mb-2">
+            <img 
+              src="/lovable-uploads/0e65446c-c906-4ab5-9982-6f1414453c98.png" 
+              alt="Adworthy Logo" 
+              className="h-6"
+            />
+            <DialogTitle className="text-2xl font-semibold">Customize Ad Template</DialogTitle>
+          </div>
           <DialogDescription>
             Modify this template with your own content and generate a new ad.
           </DialogDescription>
