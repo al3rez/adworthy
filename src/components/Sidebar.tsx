@@ -10,7 +10,7 @@ const Sidebar: FC = () => {
   const [userModalOpen, setUserModalOpen] = useState(false);
   
   return (
-    <div className="bg-gradient-to-bl from-rose-50 to-teal-50 border-r-[1px] border-r-lightgrey overflow-y-auto fixed top-0 left-0 h-screen w-80 flex flex-col items-center pt-9 text-[#536772]">
+    <div className="bg-gradient-to-bl from-rose-50 to-teal-50 border-r-[1px] border-r-lightgrey overflow-y-auto fixed top-0 left-0 h-screen w-80 flex flex-col items-center pt-9 text-[#536772] font-figtree">
       <div className="flex flex-col items-center gap-10 mb-10">
         <div className="flex items-center justify-between w-60">
           <span className="font-semibold text-lg bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600">
@@ -59,9 +59,12 @@ const Sidebar: FC = () => {
         </div>
       </div>
 
-      {/* User Profile Modal */}
+      {/* User Profile Modal as widget rather than centered */}
       <Dialog open={userModalOpen} onOpenChange={setUserModalOpen}>
-        <DialogContent className="bg-gradient-to-bl from-rose-50 to-teal-50 p-0 w-64 max-w-[264px]">
+        <DialogContent 
+          className="bg-gradient-to-bl from-rose-50 to-teal-50 p-0 w-64 max-w-[264px] absolute left-[130px] bottom-[80px] transform-none"
+          onPointerDownOutside={(e) => e.preventDefault()}
+        >
           <div className="flex flex-col mb-3 bg-ice border-2 border-lightgrey rounded-md w-full">
             <div className="hover:bg-lightgrey p-3 rounded-md flex items-center gap-1 cursor-pointer text-daisygrey hover:text-black">
               <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 512 512" className="text-grey h-6 w-6" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">

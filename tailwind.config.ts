@@ -23,6 +23,7 @@ export default {
 				sans: ['SF Pro Display', 'Inter', 'system-ui', 'sans-serif'],
 				serif: ['SF Pro Text', 'Georgia', 'serif'],
 				mono: ['SF Mono', 'monospace'],
+				figtree: ['Figtree', 'SF Pro Display', 'system-ui', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
