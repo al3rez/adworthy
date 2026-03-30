@@ -29,7 +29,7 @@ const transformToTemplateFormat = (templates: AdTemplate[]) => {
     title: template.title || 'Ad Template',
     imageUrl: template.imageURL,
     aspectRatio: 1.2, // Default aspect ratio
-    category: template.pinner?.fullName || 'Custom Ad'
+    category: template.pinner?.fullName || 'The Farmer\'s Dog'
   }));
 };
 
@@ -92,23 +92,26 @@ const Index = () => {
           <Sidebar />
           
           <div className="flex-1 w-full">
-            <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border py-3 px-4">
-              <div className="max-w-7xl mx-auto flex items-center justify-between">
-                <h1 className="text-xl font-semibold">{title}</h1>
+            <div className="sticky top-0 z-10 bg-background border-b border-border py-3 px-6">
+              <div className="max-w-full mx-auto flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-amber-600">🏠</span>
+                  <h1 className="text-xl font-semibold text-gray-800">{title}</h1>
+                </div>
                 
                 <div className="relative flex items-center">
                   <div className="absolute left-3 text-muted-foreground">
                     <Search size={16} />
                   </div>
                   <Input 
-                    className="pl-10 w-[250px] h-9 bg-secondary/80 border-none" 
-                    placeholder="Search templates..." 
+                    className="pl-10 w-[250px] h-9 bg-gray-100 border-none rounded-full" 
+                    placeholder="Search" 
                   />
                 </div>
               </div>
             </div>
             
-            <main className="p-4 md:p-6">
+            <main className="p-6">
               {loading ? (
                 <div className="flex items-center justify-center h-[60vh]">
                   <Loader size="lg" />

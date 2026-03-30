@@ -10,7 +10,8 @@ interface MasonryGridProps {
 
 const defaultBreakpointColumns = {
   default: 5,
-  1536: 4,
+  1920: 5,
+  1600: 4,
   1280: 3,
   1024: 3,
   768: 2,
@@ -28,7 +29,7 @@ const MasonryGrid: FC<MasonryGridProps> = ({
       <Masonry
         breakpointCols={breakpointColumns}
         className="flex -ml-4 w-auto"
-        columnClassName="pl-4 bg-clip-padding"
+        columnClassName="pl-4 bg-clip-padding mb-4"
       >
         {children}
       </Masonry>

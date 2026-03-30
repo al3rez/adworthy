@@ -1,6 +1,6 @@
 
 import { FC, useState } from 'react';
-import { Heart, Download, Share2 } from 'lucide-react';
+import { Share2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface AdTemplateCardProps {
@@ -17,17 +17,14 @@ interface AdTemplateCardProps {
 const AdTemplateCard: FC<AdTemplateCardProps> = ({ template, onClick }) => {
   const [isHovered, setIsHovered] = useState(false);
   
-  const gridRowSpan = Math.ceil(template.aspectRatio * 30);
-  
   return (
     <div 
-      className="rounded-lg overflow-hidden relative group cursor-pointer"
-      style={{ gridRowEnd: `span ${gridRowSpan}` }}
+      className="relative overflow-hidden rounded-lg cursor-pointer bg-white shadow-sm group"
       onClick={() => onClick(template)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="w-full h-full overflow-hidden">
+      <div className="w-full overflow-hidden">
         <img 
           src={template.imageUrl} 
           alt={template.title}
@@ -39,35 +36,29 @@ const AdTemplateCard: FC<AdTemplateCardProps> = ({ template, onClick }) => {
         />
       </div>
       
-      {/* Overlay with animation */}
-      <div 
-        className={cn(
-          "absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent p-3 flex flex-col justify-between",
-          "opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-        )}
-      >
-        <div className="flex justify-end space-x-1">
-          <button className="h-8 w-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/30 transition-colors">
-            <Heart size={15} />
-          </button>
-          <button className="h-8 w-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/30 transition-colors">
-            <Share2 size={15} />
-          </button>
-        </div>
-        
-        <div className="space-y-2">
-          <span className="inline-block px-2 py-1 text-xs font-medium bg-white/20 backdrop-blur-md rounded-md text-white">
-            {template.category}
-          </span>
-          <h3 className="text-white font-medium line-clamp-1">{template.title}</h3>
-          <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-            <button className="flex items-center gap-1.5 px-3 py-1.5 bg-white/80 backdrop-blur-md rounded-md text-sm font-medium text-gray-900 hover:bg-white transition-colors">
-              <Download size={14} />
-              Use Template
-            </button>
-          </div>
+      {/* Bottom label with company name */}
+      <div className="absolute bottom-0 left-0 right-0 p-2 bg-white bg-opacity-90 text-left">
+        <div className="text-xs text-gray-800 font-medium line-clamp-1">
+          {template.category}
         </div>
       </div>
+      
+      {/* Action buttons */}
+      <div className="absolute right-2 bottom-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <button className="w-6 h-6 rounded-full bg-white shadow flex items-center justify-center">
+          <Share2 size={12} className="text-gray-600" />
+        </button>
+      </div>
+
+      {/* Product badge for conversations (if needed) */}
+      {template.title && template.title.includes("picky") && (
+        <div className="absolute top-3 left-3">
+          <div className="bg-white rounded-full px-3 py-1 text-xs font-medium flex items-center gap-1">
+            <div className="w-2 h-2 rounded-full bg-red-500"></div>
+            <span className="text-gray-800">Is The Farmer's Dog good for picky eaters?</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
