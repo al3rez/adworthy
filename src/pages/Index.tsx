@@ -6,11 +6,11 @@ import MasonryGrid from '@/components/MasonryGrid';
 import AdTemplateCard from '@/components/AdTemplateCard';
 import AdCustomizerModal from '@/components/AdCustomizerModal';
 import Loader from '@/components/Loader';
-import { fetchPinterestSuggestions, transformPinterestToTemplates } from '@/utils/pinterestApi';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { fetchAdTemplates, AdTemplate } from '@/utils/apiService';
 
 const exploreTitle = (path: string) => {
   const pathSegments = path.split('/');
@@ -23,36 +23,42 @@ const exploreTitle = (path: string) => {
   return 'Explore';
 };
 
+const transformToTemplateFormat = (templates: AdTemplate[]) => {
+  return templates.map(template => ({
+    id: template.id,
+    title: template.title || 'Ad Template',
+    imageUrl: template.imageURL,
+    aspectRatio: 1.2, // Default aspect ratio
+    category: template.pinner?.fullName || 'Custom Ad'
+  }));
+};
+
 const Index = () => {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<any | null>(null);
   const [templates, setTemplates] = useState<any[]>([]);
-  const [bookmark, setBookmark] = useState<string | undefined>(undefined);
   const [loadingMore, setLoadingMore] = useState(false);
   const { toast } = useToast();
   
   const fetchTemplates = async (resetExisting = false) => {
     try {
-      const currentBookmark = resetExisting ? undefined : bookmark;
       setLoading(resetExisting);
       setLoadingMore(!resetExisting && templates.length > 0);
       
-      const pinterestResponse = await fetchPinterestSuggestions("300052393940967985", currentBookmark);
-      const { templates: newTemplates, bookmark: newBookmark } = transformPinterestToTemplates(pinterestResponse);
+      const adTemplates = await fetchAdTemplates();
+      const transformedTemplates = transformToTemplateFormat(adTemplates);
       
       if (resetExisting) {
-        setTemplates(newTemplates);
+        setTemplates(transformedTemplates);
       } else {
-        setTemplates(prev => [...prev, ...newTemplates]);
+        setTemplates(prev => [...prev, ...transformedTemplates]);
       }
-      
-      setBookmark(newBookmark);
     } catch (error) {
       console.error('Error loading templates:', error);
       toast({
         title: "Error loading templates",
-        description: "There was a problem fetching templates from Pinterest",
+        description: "There was a problem fetching ad templates",
         variant: "destructive"
       });
     } finally {
@@ -71,9 +77,10 @@ const Index = () => {
   };
   
   const handleLoadMore = () => {
-    if (bookmark) {
-      fetchTemplates();
-    }
+    toast({
+      title: "No more templates",
+      description: "All available templates have been loaded",
+    });
   };
   
   const title = exploreTitle(window.location.pathname);
@@ -126,7 +133,7 @@ const Index = () => {
                     </div>
                   )}
                   
-                  {templates.length > 0 && bookmark && (
+                  {templates.length > 0 && (
                     <div className="mt-8 flex justify-center">
                       <Button 
                         onClick={handleLoadMore} 
