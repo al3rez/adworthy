@@ -18,6 +18,9 @@ const App = () => {
     link.rel = 'stylesheet';
     link.href = 'https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&display=swap';
     document.head.appendChild(link);
+
+    // Apply Figtree font to body
+    document.body.classList.add('font-figtree');
   }, []);
 
   return (
