@@ -1,5 +1,5 @@
 
-import Pinterest from 'pinterest.js';
+const Pinterest = require("pinterest.js");
 
 export const fetchPinterestSuggestions = async (
   categoryId: string = "300052393940967985", 
