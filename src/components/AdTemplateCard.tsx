@@ -36,13 +36,6 @@ const AdTemplateCard: FC<AdTemplateCardProps> = ({ template, onClick }) => {
         />
       </div>
       
-      {/* Bottom label with company name */}
-      <div className="absolute bottom-0 left-0 right-0 p-2 bg-white bg-opacity-90 text-left">
-        <div className="text-xs text-gray-800 font-medium line-clamp-1">
-          {template.category}
-        </div>
-      </div>
-      
       {/* Action buttons */}
       <div className="absolute right-2 bottom-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
         <button className="w-6 h-6 rounded-full bg-white shadow flex items-center justify-center">
