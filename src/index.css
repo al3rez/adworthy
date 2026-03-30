@@ -147,3 +147,43 @@
   background-color: rgba(17, 24, 39, 0.5); 
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
+
+/* New classes for the Swipify-style sidebar */
+.shadow-one {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.text-daisygrey {
+  color: #536772;
+}
+
+.bg-cloud {
+  background-color: #f5f5f5;
+}
+
+.bg-ice {
+  background-color: #fbfbfb;
+}
+
+.border-lightgrey {
+  border-color: #e5e7eb;
+}
+
+.text-grey {
+  color: #808080;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
