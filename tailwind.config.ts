@@ -20,10 +20,11 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				sans: ['SF Pro Display', 'Inter', 'system-ui', 'sans-serif'],
+				sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
 				serif: ['SF Pro Text', 'Georgia', 'serif'],
 				mono: ['SF Mono', 'monospace'],
-				figtree: ['Figtree', 'SF Pro Display', 'system-ui', 'sans-serif'],
+				jakarta: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+				figtree: ['Figtree', 'system-ui', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',

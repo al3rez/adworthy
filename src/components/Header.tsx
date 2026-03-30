@@ -9,8 +9,8 @@ const Header: FC = () => {
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border py-3 px-4 md:px-6">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center">
-          <h1 className="text-xl font-semibold font-figtree bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 mr-6">
-            CreativeCanvas
+          <h1 className="text-xl font-semibold font-jakarta bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 mr-6">
+            SwipeFarm
           </h1>
           
           <div className="relative hidden md:flex items-center">

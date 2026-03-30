@@ -19,7 +19,7 @@ const AdTemplateCard: FC<AdTemplateCardProps> = ({ template, onClick }) => {
   
   return (
     <div 
-      className="relative overflow-hidden rounded-lg cursor-pointer bg-white shadow-sm group font-figtree"
+      className="relative overflow-hidden rounded-lg cursor-pointer bg-white shadow-sm group font-jakarta"
       onClick={() => onClick(template)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
