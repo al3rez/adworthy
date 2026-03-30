@@ -1,7 +1,6 @@
 
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { Button } from '@/components/ui/button';
-import { Filter } from 'lucide-react';
 
 interface CategoriesFilterProps {
   categories: string[];
@@ -39,7 +38,7 @@ const CategoriesFilter: FC<CategoriesFilterProps> = ({
         ))}
         
         <Button size="sm" variant="outline" className="text-sm font-medium whitespace-nowrap ml-auto">
-          <Filter size={14} className="mr-1.5" />
+          <span className="mr-1.5">🔍</span>
           More Filters
         </Button>
       </div>

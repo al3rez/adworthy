@@ -1,6 +1,5 @@
 
 import { FC, useState } from 'react';
-import { HomeIcon, Zap, Settings, LogOut } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 
@@ -27,7 +26,7 @@ const Sidebar: FC = () => {
             className={`p-3 cursor-pointer font-extrabold w-64 flex items-center gap-3 rounded-xl ${location.pathname === '/' ? 'shadow-one bg-black text-white' : ''}`}
             onClick={() => navigate('/')}
           >
-            <HomeIcon size={16} />
+            🏠
             <p>Explore</p>
           </div>
           
@@ -35,7 +34,7 @@ const Sidebar: FC = () => {
             className={`p-3 cursor-pointer font-extrabold w-64 flex items-center gap-3 rounded-xl ${location.pathname === '/analyze' ? 'shadow-one bg-black text-white' : ''}`}
             onClick={() => navigate('/analyze')}
           >
-            <Zap size={16} />
+            ⚡
             <p>Analyze</p>
           </div>
         </div>
@@ -71,12 +70,12 @@ const Sidebar: FC = () => {
         >
           <div className="flex flex-col mb-3 bg-ice border-2 border-lightgrey rounded-md w-full">
             <div className="hover:bg-lightgrey p-3 rounded-md flex items-center gap-1 cursor-pointer text-daisygrey hover:text-black">
-              <Settings className="text-grey h-6 w-6" />
+              ⚙️
               <p className="font-semibold">Edit Profile</p>
             </div>
             <div className="border-t border-lightgrey my-1"></div>
             <div className="hover:bg-lightgrey p-3 rounded-md flex items-center gap-1 cursor-pointer text-daisygrey hover:text-black">
-              <LogOut className="text-grey h-6 w-6" />
+              🚪
               <p className="font-semibold">Logout</p>
             </div>
           </div>

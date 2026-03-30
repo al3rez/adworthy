@@ -6,7 +6,6 @@ import Loader from '@/components/Loader';
 import Sidebar from '@/components/Sidebar';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { fetchAdTemplates, AdTemplate } from '@/utils/apiService';
 import MasonryGrid from '@/components/MasonryGrid';
@@ -85,7 +84,7 @@ const Index = () => {
             
             <div className="relative flex items-center">
               <div className="absolute left-3 text-muted-foreground">
-                <Search size={16} />
+                🔍
               </div>
               <Input 
                 className="pl-10 w-[250px] h-9 bg-gray-100 border-none rounded-full" 
